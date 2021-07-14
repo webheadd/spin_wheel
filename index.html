@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin Wheel</title>
+
+    <link rel="stylesheet" href="./css/wheel.css" />
+  </head>
+  <body>
+    <div class="main">
+      <div class="container">
+
+        <div class="left">
+          <div class="slogan">
+            <div class="subtitle">Epson Islandwide Promotion</div>
+            <div class="title">Spin-and-Win</div>
+          </div>
+          <div class="prize_container">
+            <div class="title">Get a Chance to Win Exciting Prizes</div>
+            <div class="prizes">
+              <div class="prize">
+                <img src="" alt="Mystery Gift">
+                <span>Mystery Gift</span>
+              </div>
+              <div class="prize">
+                <img src="" alt="E-Voucher">
+                <span>E-Voucher</span>
+              </div>
+              <div class="prize">
+                <img src="" alt="E-Voucher">
+                <span>E-Voucher</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wheel_container right">
+          <canvas id="wheel" width="500" height="500"></canvas>
+          <div id="rotate">
+            <span>EPSON</span>
+            <div class="triangle"></div>
+          </div>
+        </div>
+
+
+        <!-- <div id="test_wheel"></div> -->
+      </div>
+
+      <!-- <div class="misc">
+        <div id="prizes">
+          <h1>Prizes</h1>
+          <ul id="prize_list"></ul>
+        </div>
+
+        <div id="setter">
+          <input type="number" min="1" name="prize" id="prize_input">
+        </div>
+      </div> -->
+    </div>
+
+    <script src="js/wheel.js"></script>
+  </body>
+</html>

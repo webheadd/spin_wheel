@@ -1,0 +1,17 @@
+// FONT
+$font-family: 'Epson';
+@font-face {
+    font-family: $font-family;
+    src: url('/assets/font/Bebas-Regular.ttf') format('truetype'),
+         url('/assets/font/BebasNeue-Bold.ttf') format('truetype');
+}
+$font-size: 10px;
+
+// WHEEL
+$wheel-border-light: #D11A80;
+$wheel-border-dark: #9D0165;
+
+$wheel-bulb-color: #FFFB96;
+
+$wheel-prize-primary: #5037FF;
+$wheel-prize-secondary: #FFA300;

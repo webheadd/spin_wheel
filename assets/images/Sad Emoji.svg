@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="468.045" height="468.045" viewBox="0 0 468.045 468.045">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff1cf;
+      }
+
+      .cls-2 {
+        fill: #ffe39e;
+      }
+
+      .cls-3 {
+        fill: #695342;
+      }
+
+      .cls-4 {
+        fill: #1ab3ff;
+      }
+
+      .cls-5 {
+        fill: #303030;
+      }
+
+      .cls-6, .cls-8 {
+        fill: none;
+      }
+
+      .cls-6 {
+        stroke: #fff;
+        stroke-width: 5px;
+      }
+
+      .cls-7 {
+        stroke: none;
+      }
+
+      .cls-9 {
+        filter: url(#_Path_);
+      }
+    </style>
+    <filter id="_Path_" x="0" y="0" width="468.045" height="468.045" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_47" data-name="Group 47" transform="translate(9 6)">
+    <g id="_Group_" data-name="&lt;Group&gt;" transform="translate(0 0)">
+      <g id="_Group_2" data-name="&lt;Group&gt;" transform="translate(0 0)">
+        <g id="_Group_3" data-name="&lt;Group&gt;">
+          <g id="_Group_4" data-name="&lt;Group&gt;">
+            <g class="cls-9" transform="matrix(1, 0, 0, 1, -9, -6)">
+              <path id="_Path_2" data-name="&lt;Path&gt;" class="cls-1" d="M0,225.507C-.267,101.231,100.262.268,224.538,0S449.777,100.262,450.044,224.538,349.784,449.777,225.507,450.045.268,349.783,0,225.507Z" transform="translate(9 6)"/>
+            </g>
+          </g>
+          <g id="_Group_5" data-name="&lt;Group&gt;" transform="translate(35.663 32.712)">
+            <path id="_Path_3" data-name="&lt;Path&gt;" class="cls-2" d="M306.674,0a223.965,223.965,0,0,1,35.663,121.131C342.605,245.407,242.077,346.37,117.8,346.637A223.949,223.949,0,0,1,0,313.66,224.847,224.847,0,0,0,189.843,417.066c124.276-.267,224.8-101.23,224.537-225.506A224.873,224.873,0,0,0,306.674,0Z" transform="translate(0 0)"/>
+          </g>
+          <g id="_Group_6" data-name="&lt;Group&gt;" transform="translate(15.035 16.618)">
+            <path id="_Path_4" data-name="&lt;Path&gt;" class="cls-2" d="M15.6,232.564C15.352,117.181,108.687,23.443,224.07,23.195A208.561,208.561,0,0,1,389.854,104.4,208.838,208.838,0,0,0,208.469,0C93.086.249-.248,93.987,0,209.37A207.989,207.989,0,0,0,43.585,336.631,207.96,207.96,0,0,1,15.6,232.564Z" transform="translate(0 0)"/>
+          </g>
+        </g>
+      </g>
+      <g id="_Group_7" data-name="&lt;Group&gt;" transform="translate(156.139 238.043)">
+        <ellipse id="_Path_5" data-name="&lt;Path&gt;" class="cls-3" cx="68.877" cy="40.629" rx="68.877" ry="40.629" transform="translate(0 0)"/>
+      </g>
+      <g id="_Group_8" data-name="&lt;Group&gt;" transform="translate(91.98 144.833)">
+        <g id="_Group_9" data-name="&lt;Group&gt;" transform="translate(4.259 35.44)">
+          <path id="_Path_6" data-name="&lt;Path&gt;" class="cls-4" d="M59.223,0,0,37.715,1.457,230.291A224.133,224.133,0,0,0,59.223,258.8Z" transform="translate(0 0)"/>
+          <path id="_Path_7" data-name="&lt;Path&gt;" class="cls-4" d="M0,0,59.223,37.715,57.765,230.291A224.145,224.145,0,0,1,0,258.8Z" transform="translate(198.434 0)"/>
+        </g>
+        <g id="_Group_10" data-name="&lt;Group&gt;" transform="translate(0 0)">
+          <g id="_Group_11" data-name="&lt;Group&gt;">
+            <path id="_Path_8" data-name="&lt;Path&gt;" class="cls-5" d="M11.666,79.841A9.538,9.538,0,0,1,5.8,62.778L38.252,37.492,4.7,17.762A9.538,9.538,0,1,1,14.375,1.318L60.023,28.167A9.538,9.538,0,0,1,61.05,43.913L17.521,77.827A9.488,9.488,0,0,1,11.666,79.841Z"/>
+          </g>
+          <g id="_Group_12" data-name="&lt;Group&gt;" transform="translate(201.361 0.001)">
+            <path id="_Path_9" data-name="&lt;Path&gt;" class="cls-5" d="M53.058,79.84A9.489,9.489,0,0,1,47.2,77.825L3.676,43.912A9.54,9.54,0,0,1,4.7,28.166L50.349,1.317A9.538,9.538,0,1,1,60.019,17.76L26.474,37.491,58.927,62.777A9.538,9.538,0,0,1,53.058,79.84Z" transform="translate(0 0)"/>
+          </g>
+        </g>
+      </g>
+    </g>
+    <g id="Ellipse_26" data-name="Ellipse 26" class="cls-6" transform="translate(1.247 0.624)">
+      <circle class="cls-7" cx="224.399" cy="224.399" r="224.399"/>
+      <circle class="cls-8" cx="224.399" cy="224.399" r="221.899"/>
+    </g>
+  </g>
+</svg>
