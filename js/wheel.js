@@ -17,16 +17,16 @@ const radius = 360;
 
 const prizes = [
     { id: 1, value: '$50/nVoucher', color: '4643e6' },
-    { id: 2, value: 'Better Luck/nNext Time', color: 'ffa300' },
+    { id: 2, value: 'Better Luck-1/nNext Time', color: 'ffa300' },
     { id: 3, value: 'Mystery/nGift', color: '4643e6' },
-    { id: 4, value: 'Better Luck/nNext Time', color: 'ffa300' },
-    { id: 5, value: '$50/nVoucher', color: '4643e6' },
-    { id: 6, value: 'Better Luck/nNext Time', color: 'ffa300' }
+    { id: 4, value: 'Better Luck-2/nNext Time', color: 'ffa300' },
+    { id: 5, value: '$10/nVoucher', color: '4643e6' },
+    { id: 6, value: 'Better Luck-3/nNext Time', color: 'ffa300' }
 ]
 
 // used to get prize
 const reversedPrizes = [...prizes, []].reverse();
-
+console.log(reversedPrizes);
 // total prizes count
 let numberOfPrizes = prizes.length;
 
@@ -42,8 +42,8 @@ let prize_depth = canvas_size/2;
 // BULB
 let numberOfBulb = 8;
 let bulb = {
-    width: canvas_size/20,
-    height: canvas_size/20
+    width: x/20,
+    height: y/20
 }
 
 let rotate_deg = 0;
@@ -51,6 +51,7 @@ let rotate_deg = 0;
 
 
 function getPrize(actualDeg) {
+    console.log(actualDeg);
     let computedPrize = Math.ceil(actualDeg / prize);
     alert("PRIZE: " + reversedPrizes[computedPrize].value);
     // alert("Prize: " + reversedPrizes[computedPrize].value)
@@ -59,9 +60,8 @@ function getPrize(actualDeg) {
 function calculatePrize(p) {
     const rng = Math.random() * prize-1;
     const computedAngle = (p * prize) - rng;
-    const numOfRotation = radius * (Math.floor(10 + Math.random() * 25)); //min 10 rotations, max 25 rotations
+    const numOfRotation = radius * (Math.floor(15 + Math.random() * 35)); //min 10 rotations, max 25 rotations
     const stopValue = Math.ceil(computedAngle + numOfRotation);
-    // console.log(computedAngle);
     return stopValue;
 }
 
@@ -84,9 +84,8 @@ wheel_canvas.addEventListener('transitionend', () => {
     playBtn.style.pointerEvents = 'auto';
     wheel_canvas.style.transition = 'none';
     const actualDeg = ((rotate_deg) % 360);
-    console.log(rotate_deg, "rotate deg");
-    console.log(actualDeg, "actual deg");
-    getPrize(actualDeg);
+    // console.log(actualDeg, Math.PI/2);
+    getPrize(actualDeg+90);//remove 90 to right arrow
     wheel_canvas.style.transform = `rotate(${actualDeg}deg)`;
 })
 
@@ -110,6 +109,7 @@ function drawLightBulbs() {
         blb.style.width = `${bulb.width}px`;
         blb.style.height = `${bulb.height}px`;
         blb.style.margin = `-${bulb.width/2}px`;
+        blb.style.zIndex = 10;
         angle += dangle;
         blb.style.transform = `rotate(${angle}deg) translate(${containerWidth / 2}px) rotate(-${angle}deg)`;
         container.appendChild(blb);
@@ -120,15 +120,9 @@ function drawWheel() {
     console.log("TEST");
     prizes.forEach((p, i) => {
         const test_wheel = document.getElementById('test_wheel');
-
         const startAngle = i*angle;
         const endAngle = (i+1)*angle;
         const new_div = document.createElement('div');
-        console.log(startAngle, endAngle);
-        // width: 0;
-        // height: 0;
-        // border-style: solid;
-        // border-width: 0 50px 200px 50px;
         new_div.className = "triangle";
         new_div.style.width = 0;
         new_div.style.height = 0;
@@ -144,9 +138,9 @@ function drawWheel() {
 function drawSegments(r) {
     prizes.forEach((p, i)=> {
         const startAngle = i*angle;
+        console.log(startAngle, "Start");
         const endAngle = (i+1)*angle;
         let text = p.value.split("/n");
-        console.log(text);
         context.beginPath();
         context.fillStyle = `#${p.color}`;
         context.moveTo(x, y);
@@ -154,38 +148,29 @@ function drawSegments(r) {
         context.lineTo(x, y)
         context.fill();
         context.closePath();
-
         context.save();
 
         context.beginPath();
         context.textAlign = "left";
-        // context.textBaseline = "middle";
-        // context.translate(x, y);
         context.translate(x + Math.cos(startAngle + angle / 2) * (x/1.5),
                     y + Math.sin(startAngle + angle / 2) * (y/1.5));
         context.rotate(startAngle + angle / 2 + Math.PI / 2);    
         context.fillStyle = "#fff";
-        text.forEach((txt, i) => { 
+        text.forEach((txt, x) => { 
             let fontSize;
-            if(i === 0) {
+            if(x === 0) {
                 fontSize = getFont();
             } else {
                 fontSize = getFont();
             }
             context.font = `bold ${fontSize}px Epson`;
-            context.fillText(txt.toUpperCase(), -context.measureText(txt.toUpperCase()).width / 2, fontSize*i);
+            context.fillText(txt.toUpperCase(), -context.measureText(txt.toUpperCase()).width / 2, fontSize*x);
         })
         context.closePath();
         context.restore();
-        // // LABELS
-        // let theta = (startAngle + endAngle) / 2;
-        // let dY = Math.sin(theta) * 0.8 * r;
-        // let dX = Math.cos(theta) * 0.8 * r;
-
-        // drawText(p.value, dY, dX);
     })
     
-    // wheel_canvas.style.transform = `rotate(${1.8 * Math.PI * radius/numberOfPrizes}deg)`;
+    wheel_canvas.style.transform = `rotate(${1.8 * Math.PI * radius/numberOfPrizes}deg)`;
 }
 
 
@@ -209,21 +194,8 @@ function drawText(text, dY, dX) {
     context.restore();
 }
 
-// function displayPrizes() {
-//     reversedPrizes.forEach((p, i) => {
-//         if(p.hasOwnProperty('id')) {
-//             const li = document.createElement('li');
-//             li.innerHTML = i + " - " + p.value;
-//             prize_list.appendChild(li);
-//         }
-//     })
-// }
-
-
-
 
 
 window.onload = () => {
     initWheel();
-    console.log("LOADED");
 }
