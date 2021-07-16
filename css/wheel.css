@@ -143,7 +143,8 @@ body {
   margin-top: 20px;
 }
 
-.container .left, .container .right {
+.container .left,
+.container .right {
   margin: 50px 0;
 }
 
@@ -301,7 +302,7 @@ body {
 .container .left .slogan .subtitle {
   font-size: 3.6rem;
   margin-bottom: -15px;
-  z-index: 10;
+  z-index: 2;
 }
 
 .container .left .prize_container .title {
@@ -340,6 +341,178 @@ body {
 
 .container .left .prize_container .prizes .prize span {
   font-size: 3rem;
+}
+
+.modal {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("/assets/images/Background-Web-lose.png") !important;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: fixed;
+  opacity: 0;
+  top: -110vh;
+  left: 0;
+  z-index: 50;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  overflow-y: scroll;
+  -webkit-transition: 0.2s all ease-in-out;
+  transition: 0.2s all ease-in-out;
+}
+
+.modal .modal_content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal .modal_content .bottom {
+  margin: 0;
+}
+
+.modal .modal_content .title {
+  color: #fff;
+  font-size: 6rem;
+  padding: 10px 20px 12px 20px;
+  border-radius: 8px;
+  background: #FFA300;
+}
+
+.modal .modal_content .try_again {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
+.modal .modal_content .try_again img {
+  max-width: 250px;
+  margin: 20px 0;
+}
+
+.modal .modal_content .try_again .button {
+  background: rgba(119, 85, 171, 0.8);
+  border: 2px solid #fff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #fff;
+  width: 100%;
+  padding: 8px 20px;
+  max-width: 150px;
+  font-size: 3rem;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.modal .modal_content .try_again .button:hover {
+  background: #b1aadb;
+  -webkit-transition: 0.5s background ease-in-out;
+  transition: 0.5s background ease-in-out;
+}
+
+.win_modal {
+  color: #fff;
+  cursor: pointer;
+  background-image: url("/assets/images/Background-Web-win.png") !important;
+}
+
+.win_modal .slogan {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.win_modal .slogan div {
+  background: #5037FF !important;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 8rem !important;
+}
+
+.win_modal .slogan .subtitle {
+  font-size: 5rem !important;
+  margin-top: -10px;
+  z-index: 2;
+}
+
+.win_modal .try_again {
+  margin-top: 0 !important;
+}
+
+.win_modal .try_again .prize {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-top: -15px;
+}
+
+.win_modal .try_again .prize img {
+  margin: 0 !important;
+}
+
+.win_modal .try_again .prize span {
+  font-size: 5rem;
+}
+
+.showModal {
+  opacity: 1;
+  top: 0;
 }
 
 .bottom {

@@ -4,6 +4,10 @@ const playBtn = document.getElementById('rotate');
 const prize_list = document.getElementById('prize_list');
 const prize_input = document.getElementById('prize_input');
 const context = wheel_canvas.getContext('2d');
+const lose_modal = document.querySelector('.lose_modal');
+const win_modal = document.querySelector('.win_modal');
+const modal_btn = document.querySelector('.lose_modal .button');
+const prize_modal = win_modal.querySelector('.prize');
 
 wheel_canvas.style.width = wheel_canvas.clientWidth/2 + 'px';
 
@@ -16,12 +20,12 @@ const x = wheel_canvas.width/2,
 const radius = 360;
 
 const prizes = [
-    { id: 1, value: '$50/nVoucher', color: '4643e6' },
-    { id: 2, value: 'Better Luck-1/nNext Time', color: 'ffa300' },
-    { id: 3, value: 'Mystery/nGift', color: '4643e6' },
-    { id: 4, value: 'Better Luck-2/nNext Time', color: 'ffa300' },
-    { id: 5, value: '$10/nVoucher', color: '4643e6' },
-    { id: 6, value: 'Better Luck-3/nNext Time', color: 'ffa300' }
+    { id: 1, value: '$50/nE-Voucher', isWin: true, img: "/assets/images/e-Voucher 50.png", color: '4643e6' },
+    { id: 2, value: 'Better Luck/nNext Time', isWin: false, img: "/assets/images/Sad Emoji.png", color: 'ffa300' },
+    { id: 3, value: 'Mystery/nGift', isWin: true, img: "/assets/images/Mystery Gift.png", color: '4643e6' },
+    { id: 4, value: 'Better Luck/nNext Time', isWin: false, img: "/assets/images/Sad Emoji.png", color: 'ffa300' },
+    { id: 5, value: '$10/nE-Voucher', isWin: true, img: "/assets/images/e-Voucher 10.png", color: '4643e6' },
+    { id: 6, value: 'Better Luck/nNext Time', isWin: false, img: "/assets/images/Sad Emoji.png", color: 'ffa300' }
 ]
 
 // used to get prize
@@ -49,34 +53,11 @@ let bulb = {
 let rotate_deg = 0;
 
 
-
-function getPrize(actualDeg) {
-    console.log(actualDeg);
-    let computedPrize = Math.ceil(actualDeg / prize);
-    alert("PRIZE: " + reversedPrizes[computedPrize].value);
-    // alert("Prize: " + reversedPrizes[computedPrize].value)
-}
-
-function calculatePrize(p) {
-    const rng = Math.random() * prize-1;
-    const computedAngle = (p * prize) - rng;
-    const numOfRotation = radius * (Math.floor(15 + Math.random() * 35)); //min 10 rotations, max 25 rotations
-    const stopValue = Math.ceil(computedAngle + numOfRotation);
-    return stopValue;
-}
-
 playBtn.addEventListener('click', () => {
     let input = Math.floor(Math.random() * numberOfPrizes);
-    // if(prize_input.value) {
-    //     input = Number(prize_input.value);
-    //     if(input > numberOfPrizes) return alert(`Please set prize between 1-${numberOfPrizes}`);
-    //     if(input <= 0) return alert(`Please set prize between 1-${numberOfPrizes}`);
-    // } else {
-    //     return alert(`Please set prize between 1-${numberOfPrizes}`);
-    // }
     playBtn.style.pointerEvents = 'none';
-    rotate_deg = calculatePrize(input)//Math.floor(5000 + Math.random() * 5000);
-    wheel_canvas.style.transition = 'all 5s ease-in-out'
+    rotate_deg = calculateRotation(input);
+    wheel_canvas.style.transition = 'all 10s ease-in-out'
     wheel_canvas.style.transform = `rotate(${rotate_deg}deg)`;
 })
 
@@ -84,17 +65,60 @@ wheel_canvas.addEventListener('transitionend', () => {
     playBtn.style.pointerEvents = 'auto';
     wheel_canvas.style.transition = 'none';
     const actualDeg = ((rotate_deg) % 360);
-    // console.log(actualDeg, Math.PI/2);
-    getPrize(actualDeg+90);//remove 90 to right arrow
+    getPrize(actualDeg + 90); // +90 to make results at 0 deg
     wheel_canvas.style.transform = `rotate(${actualDeg}deg)`;
 })
 
+modal_btn.addEventListener('click', () => {
+    lose_modal.classList.remove('showModal');
+})
+
+win_modal.addEventListener('click', () => {
+    prize_modal.innerHTML = '';
+    win_modal.classList.remove('showModal');
+})
 
 function initWheel() {
     drawSegments(prize_depth);
     // displayPrizes();
     drawLightBulbs();
     // drawWheel();
+}
+
+function getPrize(actualDeg) {
+    let computedPrize = Math.ceil(actualDeg / prize);
+    let prize_received;
+    if(computedPrize > numberOfPrizes) computedPrize = computedPrize - numberOfPrizes;
+    prize_received = reversedPrizes[computedPrize]
+    openResultModal(prize_received);
+}
+
+function openResultModal(p) {
+    console.log(p);
+    if(!p.isWin) {
+        setTimeout(() => {
+            lose_modal.classList.add('showModal');
+        }, 100)
+    } else {
+        setTimeout(() => {
+            
+            let img = document.createElement('img');
+            let span = document.createElement('span');
+            img.src = p.img;
+            span.innerHTML = p.value.replace('/n', ' ');
+            prize_modal.appendChild(img);
+            prize_modal.appendChild(span);
+            win_modal.classList.add('showModal');
+        }, 100)
+    }
+}
+
+function calculateRotation(p) {
+    const rng = Math.random() * prize-1;
+    const computedAngle = (p * prize) - rng;
+    const numOfRotation = radius * 20; //20 rotations 
+    const stopValue = Math.ceil(computedAngle + numOfRotation);
+    return stopValue;
 }
 
 function drawLightBulbs() {
@@ -173,8 +197,6 @@ function drawSegments(r) {
     wheel_canvas.style.transform = `rotate(${1.8 * Math.PI * radius/numberOfPrizes}deg)`;
 }
 
-
-
 function getFont() {
     const fontBase = wheel_canvas.width,
     fontSize = wheel_canvas.width/15;
@@ -182,7 +204,6 @@ function getFont() {
     const size = canvas_size * ratio;
     return (size|0);
 }
-
 
 function drawText(text, dY, dX) {
     context.save();
@@ -193,8 +214,6 @@ function drawText(text, dY, dX) {
     context.fillText(text, dX + x, dY + y);
     context.restore();
 }
-
-
 
 window.onload = () => {
     initWheel();

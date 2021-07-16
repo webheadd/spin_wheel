@@ -1,6 +1,5 @@
 @import "reset.scss";
 @import "variables.scss";
-
 html {
   font-family: $font-family;
   font-size: $font-size;
@@ -18,33 +17,32 @@ body {
   justify-content: center;
   flex-direction: column;
   position: relative;
-  // width: 100vw;
-  // height: 100vh;
 }
+
 #test_wheel {
-  width:500px;
-  height:500px;
+  width: 500px;
+  height: 500px;
   background-color: #ccc;
-  border-radius:50%;
-  border:15px solid #dde;
+  border-radius: 50%;
+  border: 15px solid #dde;
   position: relative;
   overflow: hidden;
   transition: 5s;
 
   .triangle {
     position: absolute;
-    clip-path: polygon(100% 0 , 50% 100% , 0 0 );
-    transform:translateX(-50%);
-    transform-origin:bottom;
-    text-align:center;
-    display:flex;
+    clip-path: polygon(100% 0, 50% 100%, 0 0);
+    transform: translateX(-50%);
+    transform-origin: bottom;
+    text-align: center;
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size:20px;
-    font-weight:bold;
-    font-family:sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: sans-serif;
     color: $txt-light;
-    left:135px;
+    left: 135px;
 
     // &:first {
     //   left: 50%;
@@ -66,10 +64,10 @@ body {
   height: fit-content;
   overflow: hidden;
   margin-top: 20px;
-  // border: 1px solid #fff;
-  
-  .left, .right {
-      margin: 50px 0;
+
+  .left,
+  .right {
+    margin: 50px 0;
   }
 
   .wheel_container {
@@ -175,10 +173,10 @@ body {
   .left {
     color: $txt-light;
     .slogan {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
       div {
         background: $wheel-prize-primary;
         width: fit-content;
@@ -190,7 +188,7 @@ body {
       .subtitle {
         font-size: 3.6rem;
         margin-bottom: -15px;
-        z-index: 10;
+        z-index: 2;
       }
     }
 
@@ -226,6 +224,130 @@ body {
   }
 }
 
+// MODALS
+.modal {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("/assets/images/Background-Web-lose.png") !important;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: fixed;
+  opacity: 0;
+  top: -110vh;
+  left: 0;
+  z-index: 50;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  overflow-y: scroll;
+  transition: 0.2s all ease-in-out;
+
+  .modal_content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    // border: 1px solid #fff;
+
+    .bottom {
+      margin: 0;
+    }
+
+    .title {
+      color: $txt-light;
+      font-size: 6rem;
+      padding: 10px 20px 12px 20px;
+      border-radius: 8px;
+      background: $wheel-prize-secondary;
+    }
+
+    .try_again {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin-top: 20px;
+      margin-bottom: 50px;
+      img {
+        max-width: 250px;
+        margin: 20px 0;
+      }
+
+      .button {
+        background: rgba($button-normal-rgb, 0.8);
+        border: 2px solid #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $txt-light;
+        width: 100%;
+        padding: 8px 20px;
+        max-width: 150px;
+        font-size: 3rem;
+        text-align: center;
+        border-radius: 10px;
+        cursor: pointer;
+
+        &:hover {
+          background: $button-hover;
+          transition: 0.5s background ease-in-out;
+        }
+      }
+    }
+  }
+}
+
+.win_modal {
+  color: $txt-light;
+  cursor: pointer;
+  background-image: url("/assets/images/Background-Web-win.png") !important;
+  .slogan {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    div {
+      background: $wheel-prize-primary !important;
+      width: fit-content;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 8rem !important;
+    }
+
+    .subtitle {
+      font-size: 5rem !important;
+      margin-top: -10px;
+      z-index: 2;
+    }
+  }
+
+  .try_again {
+    margin-top: 0 !important;
+    .prize {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin-top: -15px;
+
+      img {
+        margin: 0 !important;
+      }
+
+      span {
+        font-size: 5rem;
+      }
+    }
+  }
+}
+
+.showModal {
+  opacity: 1;
+  top: 0;
+}
 
 .bottom {
   color: $txt-light;
