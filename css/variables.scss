@@ -10,6 +10,9 @@ $font-size: 10px;
 $txt-light: #fff;
 
 // WHEEL
+$initial-wheel-width: 500px;
+$initial-wheel-height: 500px;
+
 $wheel-primary: #4643e6;
 $wheel-primary-rgb: rgb(70, 67, 230);
 
@@ -37,3 +40,15 @@ $button-normal-rgb: rgb(119, 85, 171);
 
 $button-hover: #b1aadb;
 $button-hover-rgb: rgb(177, 170, 219);
+
+
+// MEDIA BREAKPOINTS
+/*
+    xs, sm - mobile phones
+    md - tablet
+    lg - laptop/desktop
+*/
+$xs-phone: 575.98px;
+$sm-phone: 767.98px;
+$md-tablet: 991.98px;
+$lg-laptop: 1199.98px;

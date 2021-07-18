@@ -1,0 +1,29 @@
+@import "../variables.scss";
+
+
+@mixin media_query ($breakpoint) {
+
+    @if($breakpoint == "xs-phone") {
+        @media only screen and (max-width: $xs-phone) {
+          @content;
+        }
+    }
+
+    @if($breakpoint == "sm-phone") {
+        @media only screen and (max-width: $sm-phone) {
+          @content;
+        }
+    }
+
+    @if($breakpoint == "md-tablet") {
+        @media only screen and (max-width: $md-tablet) {
+          @content;
+        }
+    }
+
+    @if($breakpoint == "lg-laptop") {
+        @media only screen and (max-width: $lg-laptop) {
+          @content;
+        }
+    }
+}

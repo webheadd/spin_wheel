@@ -9,13 +9,26 @@ const win_modal = document.querySelector('.win_modal');
 const modal_btn = document.querySelector('.lose_modal .button');
 const prize_modal = win_modal.querySelector('.prize');
 
-wheel_canvas.style.width = wheel_canvas.clientWidth/2 + 'px';
+// wheel_canvas.style.width = wheel_canvas.clientWidth/2 + 'px';
 
-const canvas_size = (wheel_canvas.width + wheel_canvas.height) / 2;
+const canvas_size = (wheel_canvas.clientWidth + wheel_canvas.clientHeight) / 2; 
 
-const x = wheel_canvas.width/2,
-      y = wheel_canvas.height/2
-      
+const scale = 2;
+
+wheel_canvas.style.width = canvas_size;
+wheel_canvas.style.height = canvas_size;
+
+wheel_canvas.width = canvas_size * scale;
+wheel_canvas.height = canvas_size * scale;
+
+context.scale(scale, scale);
+
+
+
+const x = wheel_canvas.clientWidth/2,
+      y = wheel_canvas.clientHeight/2;
+
+      console.log(canvas_size);
 
 const radius = 360;
 
@@ -122,17 +135,18 @@ function calculateRotation(p) {
 }
 
 function drawLightBulbs() {
-    const containerWidth = container.clientWidth + 25;
-
+    const borderSize = (container.offsetWidth - container.clientWidth) / 2; //get outer border size
+    const containerWidth = container.clientWidth + borderSize;
+    
     let angle = radius - 90; //first angle
     let dangle = radius / numberOfBulb;
 
-    for( let i = 0; i < numberOfBulb; ++i ){
+    for( let i = 0; i < numberOfBulb; i++ ){
         let blb = document.createElement('div');
         blb.classList = 'bulb';
-        blb.style.width = `${bulb.width}px`;
-        blb.style.height = `${bulb.height}px`;
-        blb.style.margin = `-${bulb.width/2}px`;
+        blb.style.width = `${borderSize/1.1}px`;
+        blb.style.height = `${borderSize/1.1}px`;
+        blb.style.margin = `-${(borderSize)/2}px`;
         blb.style.zIndex = 10;
         angle += dangle;
         blb.style.transform = `rotate(${angle}deg) translate(${containerWidth / 2}px) rotate(-${angle}deg)`;
@@ -198,8 +212,8 @@ function drawSegments(r) {
 }
 
 function getFont() {
-    const fontBase = wheel_canvas.width,
-    fontSize = wheel_canvas.width/15;
+    const fontBase = wheel_canvas.clientWidth,
+    fontSize = wheel_canvas.clientWidth/15;
     const ratio = fontSize / fontBase;
     const size = canvas_size * ratio;
     return (size|0);

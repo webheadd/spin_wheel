@@ -53,6 +53,21 @@ table {
   src: url("/assets/font/Bebas-Regular.ttf") format("truetype"), url("/assets/font/BebasNeue-Bold.ttf") format("truetype");
 }
 
+/*
+    xs, sm - mobile phones
+    md - tablet
+    lg - laptop/desktop
+*/
+@font-face {
+  font-family: "Epson";
+  src: url("/assets/font/Bebas-Regular.ttf") format("truetype"), url("/assets/font/BebasNeue-Bold.ttf") format("truetype");
+}
+
+/*
+    xs, sm - mobile phones
+    md - tablet
+    lg - laptop/desktop
+*/
 html {
   font-family: "Epson";
   font-size: 10px;
@@ -82,46 +97,18 @@ body {
   position: relative;
 }
 
-#test_wheel {
-  width: 500px;
-  height: 500px;
-  background-color: #ccc;
-  border-radius: 50%;
-  border: 15px solid #dde;
-  position: relative;
-  overflow: hidden;
-  -webkit-transition: 5s;
-  transition: 5s;
-}
-
-#test_wheel .triangle {
-  position: absolute;
-  -webkit-clip-path: polygon(100% 0, 50% 100%, 0 0);
-          clip-path: polygon(100% 0, 50% 100%, 0 0);
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
-  -webkit-transform-origin: bottom;
-          transform-origin: bottom;
-  text-align: center;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  font-size: 20px;
-  font-weight: bold;
-  font-family: sans-serif;
-  color: #fff;
-  left: 135px;
-}
-
 #wheel {
   position: relative;
   font-family: "Epson";
+  width: 500px;
+  height: 500px;
+}
+
+@media only screen and (max-width: 1199.98px) {
+  #wheel {
+    width: 420px;
+    height: 420px;
+  }
 }
 
 .container {
@@ -136,11 +123,21 @@ body {
       justify-content: space-around;
   width: 100%;
   height: auto;
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
-  height: fit-content;
   overflow: hidden;
   margin-top: 20px;
+}
+
+@media only screen and (max-width: 991.98px) {
+  .container {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    padding: 10px 0;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
 }
 
 .container .left,
@@ -161,21 +158,9 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
   margin: 20px 0;
-}
-
-.container .wheel_container:before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  border: 25px solid #D11A80;
   -webkit-box-shadow: -7px 3px 0px #9D0165;
           box-shadow: -7px 3px 0px #9D0165;
-  border: 4vh solid #D11A80;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
 }
 
 .container .wheel_container .bulb {
@@ -188,6 +173,13 @@ body {
           box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, #FFFB96 0 0px 15px 4px;
   top: 50%;
   left: 50%;
+}
+
+@media only screen and (max-width: 1199.98px) {
+  .container .wheel_container .bulb {
+    -webkit-transform: translate(20px, 20px);
+            transform: translate(20px, 20px);
+  }
 }
 
 .container .wheel_container #rotate {
@@ -299,10 +291,22 @@ body {
   font-size: 9.8rem;
 }
 
+@media only screen and (max-width: 1199.98px) {
+  .container .left .slogan div {
+    font-size: 9rem;
+  }
+}
+
 .container .left .slogan .subtitle {
   font-size: 3.6rem;
   margin-bottom: -15px;
   z-index: 2;
+}
+
+@media only screen and (max-width: 1199.98px) {
+  .container .left .slogan .subtitle {
+    font-size: 3rem;
+  }
 }
 
 .container .left .prize_container .title {
@@ -311,12 +315,25 @@ body {
   margin: 70px 0 50px 0;
 }
 
+@media only screen and (max-width: 1199.98px) {
+  .container .left .prize_container .title {
+    font-size: 2.5rem;
+    margin: 60px 0 40px 0;
+  }
+}
+
 .container .left .prize_container .prizes {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr 1fr 1fr;
       grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 60px;
+}
+
+@media only screen and (max-width: 1199.98px) {
+  .container .left .prize_container .prizes {
+    grid-gap: 50px;
+  }
 }
 
 .container .left .prize_container .prizes .prize {
@@ -339,8 +356,20 @@ body {
   max-width: 150px;
 }
 
+@media only screen and (max-width: 1199.98px) {
+  .container .left .prize_container .prizes .prize img {
+    max-width: 130px;
+  }
+}
+
 .container .left .prize_container .prizes .prize span {
   font-size: 3rem;
+}
+
+@media only screen and (max-width: 1199.98px) {
+  .container .left .prize_container .prizes .prize span {
+    font-size: 2.7rem;
+  }
 }
 
 .modal {
