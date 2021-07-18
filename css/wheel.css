@@ -74,7 +74,7 @@ html {
 }
 
 body {
-  background-image: url("/assets/images/Background-Web.png");
+  background-image: url("../assets/images/Background-Web.png");
   background-position: top center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -375,7 +375,7 @@ body {
 .modal {
   width: 100vw;
   height: 100vh;
-  background-image: url("/assets/images/Background-Web-lose.png") !important;
+  background-image: url("../assets/images/Background-Web-lose.png") !important;
   background-position: top center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -475,7 +475,7 @@ body {
 .win_modal {
   color: #fff;
   cursor: pointer;
-  background-image: url("/assets/images/Background-Web-win.png") !important;
+  background-image: url("../assets/images/Background-Web-win.png") !important;
 }
 
 .win_modal .slogan {
