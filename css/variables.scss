@@ -2,16 +2,16 @@
 $font-family: 'Epson';
 @font-face {
     font-family: $font-family;
-    src: url('/assets/font/Bebas-Regular.ttf') format('truetype'),
-         url('/assets/font/BebasNeue-Bold.ttf') format('truetype');
+    src: url('../assets/font/Bebas-Regular.ttf') format('truetype'),
+         url('../assets/font/BebasNeue-Bold.ttf') format('truetype');
 }
 $font-size: 10px;
 
 $txt-light: #fff;
 
 // WHEEL
-$initial-wheel-width: 500px;
-$initial-wheel-height: 500px;
+$initial-wheel-width: 550px;
+$initial-wheel-height: 550px;
 
 $wheel-primary: #4643e6;
 $wheel-primary-rgb: rgb(70, 67, 230);

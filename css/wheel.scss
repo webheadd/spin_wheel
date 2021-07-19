@@ -12,6 +12,10 @@ body {
   background-position: top center;
   background-repeat: no-repeat;
   background-size: cover;
+
+  @include media_query(sm-phone) {
+    background-image: url("../assets/images/Background-Mobile.png");
+  }
 }
 
 .main {
@@ -54,8 +58,16 @@ body {
   width: $initial-wheel-width;
   height: $initial-wheel-height;
   @include media_query(lg-laptop) {
-    width: 420px;
-    height: 420px;
+    width: 450px;
+    height: 450px;
+  }
+  @include media_query(md-tablet) {
+    width: 500px;
+    height: 500px;
+  }
+  @include media_query(xs-phone) {
+    width: 80vw;
+    height: 80vw;
   }
 }
 .container {
@@ -71,6 +83,7 @@ body {
     flex-direction: column;
     padding: 10px 0;
     justify-content: center;
+    margin-top: 0;
   }
 
   .left,
@@ -88,6 +101,13 @@ body {
     border: 25px solid $wheel-border-light;
     box-shadow: -7px 3px 0px $wheel-border-dark;
 
+    @include media_query(md-tablet) {
+      margin: 0;
+    }
+    @include media_query(xs-phone) {
+      border-width: 15px;
+    }
+
     // BULB
     .bulb {
       border-radius: 50%;
@@ -99,10 +119,6 @@ body {
         $wheel-bulb-color 0 0px 15px 4px;
       top: 50%;
       left: 50%;
-
-      @include media_query(lg-laptop) {
-        transform: translate(20px, 20px);
-      }
     }
 
     #rotate {
@@ -131,12 +147,14 @@ body {
         text-align: center;
         border-radius: 50%;
         text-transform: uppercase;
-        // font-weight: bold;
         font-size: 3rem;
         z-index: 1;
-        // transform: rotate(-10deg);
         box-shadow: 0 0px 5px #ccc;
         cursor: pointer;
+
+        @include media_query(xs-phone) {
+          font-size: 2rem;
+        }
       }
 
       .triangle {
@@ -184,20 +202,28 @@ body {
         width: fit-content;
         padding: 5px 20px;
         border-radius: 20px;
-        font-size: 9.8rem;
+        font-size: 11rem;
 
         @include media_query(lg-laptop) {
-          font-size: 9rem;
+          font-size: 9.5rem;
+        }
+        @include media_query(xs-phone) {
+          font-size: 16vw;
+          border-radius: 10px;
         }
       }
 
       .subtitle {
-        font-size: 3.6rem;
+        font-size: 4.3rem;
         margin-bottom: -15px;
         z-index: 2;
 
         @include media_query(lg-laptop) {
-          font-size: 3rem;
+          font-size: 3.7rem;
+        }
+        @include media_query(xs-phone) {
+          font-size: 6vw;
+          margin-bottom: -10px;
         }
       }
     }
@@ -212,6 +238,14 @@ body {
           font-size: 2.5rem;
           margin: 60px 0 40px 0;
         }
+        @include media_query(md-tablet) {
+          font-size: 3rem;
+        }
+
+        @include media_query(xs-phone) {
+          font-size: 6vw;
+          margin: 40px 0 40px 0;
+        }
       }
 
       .prizes {
@@ -221,6 +255,17 @@ body {
         // border: 1px solid #fff;
         @include media_query(lg-laptop) {
           grid-gap: 50px;
+        }
+        @include media_query(md-tablet) {
+          grid-gap: 100px;
+        }
+        @include media_query(sm-phone) {
+          grid-gap: 50px;
+        }
+
+        @include media_query(xs-phone) {
+          grid-template-columns: 1fr;
+          grid-gap: 0;
         }
 
         .prize {
@@ -233,6 +278,9 @@ body {
             max-width: 150px;
             @include media_query(lg-laptop) {
               max-width: 130px;
+            }
+            @include media_query(md-tablet) {
+              max-width: 150px;
             }
           }
 
@@ -276,7 +324,9 @@ body {
     // border: 1px solid #fff;
 
     .bottom {
-      margin: 0;
+      margin: 0 auto;
+      width: 95%;
+      text-align: center;
     }
 
     .title {
@@ -376,5 +426,7 @@ body {
 .bottom {
   color: $txt-light;
   font-size: 2.2rem;
-  margin: 20px 0 30px 0;
+  margin: 20px auto;
+  width: 95%;
+  text-align: center;
 }
