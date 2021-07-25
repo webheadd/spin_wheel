@@ -2,7 +2,7 @@
 $font-family: 'Epson';
 @font-face {
     font-family: $font-family;
-    src: url('../assets/font/Bebas-Regular.ttf') format('truetype'),
+    src: url('../assets/font/BebasNeue-Regular.ttf') format('truetype'),
          url('../assets/font/BebasNeue-Bold.ttf') format('truetype');
 }
 $font-size: 10px;
@@ -10,8 +10,8 @@ $font-size: 10px;
 $txt-light: #fff;
 
 // WHEEL
-$initial-wheel-width: 550px;
-$initial-wheel-height: 550px;
+$initial-wheel-width: 580px;
+$initial-wheel-height: 580px;
 
 $wheel-primary: #4643e6;
 $wheel-primary-rgb: rgb(70, 67, 230);
@@ -25,12 +25,14 @@ $wheel-bulb-color-rgb: #FFFB96;
 $wheel-border-light: #D11A80;
 $wheel-border-dark: #9D0165;
 
-
 $wheel-prize-primary: #5037FF;
 $wheel-prize-primary-rgb: rgb(80, 55, 255);
 
 $wheel-prize-secondary: #FFA300;
 $wheel-prize-secondary-rgb: rgb(255, 163, 0);
+
+$wheel-btn-primary: #fff;
+$wheel-btn-secondary: #edebff;
 
 $button-base-color: #3f0086;
 $button-base-color-rgb: rgb(63, 0, 134); 
@@ -48,7 +50,9 @@ $button-hover-rgb: rgb(177, 170, 219);
     md - tablet
     lg - laptop/desktop
 */
+$xxs-phone: 400.98px;
 $xs-phone: 575.98px;
 $sm-phone: 767.98px;
-$md-tablet: 991.98px;
+$md-tablet: 1049.98px;
 $lg-laptop: 1199.98px;
+$sm-desktop: 1330.98px;

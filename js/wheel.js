@@ -9,41 +9,45 @@ const win_modal = document.querySelector('.win_modal');
 const modal_btn = document.querySelector('.lose_modal .button');
 const prize_modal = win_modal.querySelector('.prize');
 
+
+
 // wheel_canvas.style.width = wheel_canvas.clientWidth/2 + 'px';
 
 const canvas_size = (wheel_canvas.clientWidth + wheel_canvas.clientHeight) / 2; 
 
 const scale = 2;
 
-wheel_canvas.style.width = canvas_size;
-wheel_canvas.style.height = canvas_size;
-
 wheel_canvas.width = canvas_size * scale;
 wheel_canvas.height = canvas_size * scale;
 
+wheel_canvas.style.width = canvas_size;
+wheel_canvas.style.height = canvas_size;
+
 context.scale(scale, scale);
 
-
+const animationLength = 10;
 
 const x = wheel_canvas.clientWidth/2,
       y = wheel_canvas.clientHeight/2;
 
-      console.log(canvas_size);
 
 const radius = 360;
 
+
+
 const prizes = [
-    { id: 1, value: '$50/nE-Voucher', isWin: true, img: "/assets/images/e-Voucher 50.png", color: '4643e6' },
-    { id: 2, value: 'Better Luck/nNext Time', isWin: false, img: "/assets/images/Sad Emoji.png", color: 'ffa300' },
-    { id: 3, value: 'Mystery/nGift', isWin: true, img: "/assets/images/Mystery Gift.png", color: '4643e6' },
-    { id: 4, value: 'Better Luck/nNext Time', isWin: false, img: "/assets/images/Sad Emoji.png", color: 'ffa300' },
-    { id: 5, value: '$10/nE-Voucher', isWin: true, img: "/assets/images/e-Voucher 10.png", color: '4643e6' },
-    { id: 6, value: 'Better Luck/nNext Time', isWin: false, img: "/assets/images/Sad Emoji.png", color: 'ffa300' }
+    { id: 1, value: '<span>$50/nE-Voucher', isWin: true, img: "../assets/images/e-Voucher 50.png", color: '4643e6' },
+    { id: 2, value: 'Better Luck/nNext Time1', isWin: false, img: "../assets/images/e-Voucher 50.png", color: 'ffa300' },
+    { id: 3, value: 'Mystery/nGift', isWin: true, img: "../assets/images/Mystery Gift.png", color: '4643e6' },
+    { id: 4, value: 'Better Luck/nNext Time2', isWin: false, img: "../assets/images/Mystery Gift.png", color: 'ffa300' },
+    { id: 5, value: '<span>$10/nE-Voucher', isWin: true, img: "../assets/images/e-Voucher 10.png", color: '4643e6' },
+    { id: 6, value: 'Better Luck/nNext Time3', isWin: false, img: "../assets/images/e-Voucher 10.png", color: 'ffa300' }
 ]
 
 // used to get prize
 const reversedPrizes = [...prizes, []].reverse();
 console.log(reversedPrizes);
+
 // total prizes count
 let numberOfPrizes = prizes.length;
 
@@ -65,16 +69,31 @@ let bulb = {
 
 let rotate_deg = 0;
 
+let audioInterval;
+
+const tickSound = new Audio('../assets/tick.mp3');
 
 playBtn.addEventListener('click', () => {
-    let input = Math.floor(Math.random() * numberOfPrizes);
+    let input = 6//Math.floor(Math.random() * numberOfPrizes);
     playBtn.style.pointerEvents = 'none';
     rotate_deg = calculateRotation(input);
-    wheel_canvas.style.transition = 'all 10s ease-in-out'
+    let counter = 0;
+    audioInterval = function() {
+        
+        if(counter <= (rotate_deg/animationLength)*.7) {
+            counter += ((rotate_deg/animationLength)*.20)*.10;
+            playSoundEffect();
+            setTimeout(audioInterval, counter);
+        }
+        
+    }
+    setTimeout(audioInterval, counter);
+    wheel_canvas.style.transition = `all ${animationLength}s ease-out`;
     wheel_canvas.style.transform = `rotate(${rotate_deg}deg)`;
 })
 
 wheel_canvas.addEventListener('transitionend', () => {
+    clearInterval(audioInterval);
     playBtn.style.pointerEvents = 'auto';
     wheel_canvas.style.transition = 'none';
     const actualDeg = ((rotate_deg) % 360);
@@ -93,9 +112,7 @@ win_modal.addEventListener('click', () => {
 
 function initWheel() {
     drawSegments(prize_depth);
-    // displayPrizes();
     drawLightBulbs();
-    // drawWheel();
 }
 
 function getPrize(actualDeg) {
@@ -128,7 +145,7 @@ function openResultModal(p) {
 
 function calculateRotation(p) {
     const rng = Math.random() * prize-1;
-    const computedAngle = (p * prize) - rng;
+    const computedAngle = (p * prize) - rng - 90;
     const numOfRotation = radius * 20; //20 rotations 
     const stopValue = Math.ceil(computedAngle + numOfRotation);
     return stopValue;
@@ -154,31 +171,11 @@ function drawLightBulbs() {
     }
 }
 
-function drawWheel() {
-    console.log("TEST");
-    prizes.forEach((p, i) => {
-        const test_wheel = document.getElementById('test_wheel');
-        const startAngle = i*angle;
-        const endAngle = (i+1)*angle;
-        const new_div = document.createElement('div');
-        new_div.className = "triangle";
-        new_div.style.width = 0;
-        new_div.style.height = 0;
-        new_div.style.borderStyle = 'solid';
-        new_div.style.borderWidth = '200px 100px 0 100px';
-        new_div.style.borderColor = `#${p.color} transparent transparent transparent`;
-        new_div.style.transform = `rotate(${prize*i}deg)`;
-        console.log(prize*i);
-        test_wheel.appendChild(new_div);
-    })
-}
-
 function drawSegments(r) {
     prizes.forEach((p, i)=> {
         const startAngle = i*angle;
-        console.log(startAngle, "Start");
         const endAngle = (i+1)*angle;
-        let text = p.value.split("/n");
+
         context.beginPath();
         context.fillStyle = `#${p.color}`;
         context.moveTo(x, y);
@@ -186,49 +183,109 @@ function drawSegments(r) {
         context.lineTo(x, y)
         context.fill();
         context.closePath();
-        context.save();
+        // Draw Label texts
+        drawText(p, startAngle, endAngle);
 
-        context.beginPath();
-        context.textAlign = "left";
-        context.translate(x + Math.cos(startAngle + angle / 2) * (x/1.5),
-                    y + Math.sin(startAngle + angle / 2) * (y/1.5));
-        context.rotate(startAngle + angle / 2 + Math.PI / 2);    
-        context.fillStyle = "#fff";
-        text.forEach((txt, x) => { 
-            let fontSize;
-            if(x === 0) {
-                fontSize = getFont();
-            } else {
-                fontSize = getFont();
-            }
-            context.font = `bold ${fontSize}px Epson`;
-            context.fillText(txt.toUpperCase(), -context.measureText(txt.toUpperCase()).width / 2, fontSize*x);
-        })
-        context.closePath();
-        context.restore();
+        // PENDING
+        // if(!p.isWin) {
+        //     drawIcons(p, startAngle, endAngle);
+        // }
+        
+        
     })
     
     wheel_canvas.style.transform = `rotate(${1.8 * Math.PI * radius/numberOfPrizes}deg)`;
 }
 
+function drawText(p, startAngle, endAngle) {
+    context.save();
+
+    let text = p.value.split("/n");
+
+    context.translate(x + Math.cos(startAngle + angle / 2) * (x/1.6), y + Math.sin(startAngle + angle / 2) * (y/1.6));
+    context.rotate(startAngle + angle / 2 + Math.PI / 2);    
+
+    context.beginPath();
+
+    context.textAlign = "left";
+    context.fillStyle = "#fff";
+    text.forEach((txt, x) => { 
+        let fontSize;
+
+        if(txt.includes('<span>')) {
+
+            txt = txt.split('<span>')[1];
+            fontSize = getFont() * 3.2;
+
+        } else {
+
+            fontSize = getFont()*1.2;
+
+        }
+
+        context.font = `${fontSize}px Epson`;
+        context.fillText(txt.toUpperCase(), -context.measureText(txt.toUpperCase()).width / 2, (fontSize*x));
+    })
+
+    context.restore();
+}
+
+function drawIcons(p, startAngle, endAngle) {
+    console.log("DRAW");
+    let img = new Image();
+    img.src = p.img;
+    img.width = canvas_size*0.2;
+    img.height = canvas_size*0.2;
+    let imageLeft = 0,
+        imageTop = 0,
+        imageAngle = 0;
+
+    //check if image has loaded
+    if(img.height || img.width) {
+        // console.log(img.width, img.height);
+        imageLeft = (x - (img.width));
+        imageTop = (y - (img.height))/2;
+        imageAngle = (startAngle + ((endAngle - startAngle)/2));
+    }
+
+    context.save();
+    context.translate(x, y);
+
+    console.log(x, y);
+    console.log(imageLeft, imageTop);
+
+    context.rotate(imageAngle);
+    // console.log(imageLeft, imageTop, imageAngle);
+    context.translate(-x, -y);
+
+    context.drawImage(img, imageLeft, imageTop, 80, 80);
+
+    context.restore();
+}
+
+function playSoundEffect() {
+    let soundCopy = tickSound.cloneNode(true);
+    soundCopy.play();
+}
+
 function getFont() {
     const fontBase = wheel_canvas.clientWidth,
-    fontSize = wheel_canvas.clientWidth/15;
+    fontSize = wheel_canvas.clientWidth/20;
     const ratio = fontSize / fontBase;
     const size = canvas_size * ratio;
     return (size|0);
 }
 
-function drawText(text, dY, dX) {
-    context.save();
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.font = "20px Arial";
-    context.fillStyle = "black";
-    context.fillText(text, dX + x, dY + y);
-    context.restore();
+function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 window.onload = () => {
     initWheel();
+    if(getParameterByName('id')) alert("ID Parameter: " + getParameterByName('id'));
 }
