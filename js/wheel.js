@@ -71,7 +71,7 @@ let rotate_deg = 0;
 
 let audioInterval;
 
-const tickSound = new Audio('../assets/tick.mp3');
+const tickSound = new Audio('assets/tick.mp3');
 
 playBtn.addEventListener('click', () => {
     let input = 6//Math.floor(Math.random() * numberOfPrizes);
