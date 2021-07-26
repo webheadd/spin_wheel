@@ -37,11 +37,11 @@ const radius = 360;
 
 const prizes = [
     { id: 1, value: '<span>$50/nE-Voucher', isWin: true, img: "./assets/images/e-Voucher 50.png", color: '4643e6' },
-    { id: 2, value: 'Better Luck/nNext Time1', isWin: false, img: "./assets/images/e-Voucher 50.png", color: 'ffa300' },
+    { id: 2, value: 'Better Luck/nNext Time', isWin: false, img: "./assets/images/Sad Emoji.png", color: 'ffa300' },
     { id: 3, value: 'Mystery/nGift', isWin: true, img: "./assets/images/Mystery Gift.png", color: '4643e6' },
-    { id: 4, value: 'Better Luck/nNext Time2', isWin: false, img: "./assets/images/Mystery Gift.png", color: 'ffa300' },
+    { id: 4, value: 'Better Luck/nNext Time', isWin: false, img: "./assets/images/Sad Emoji.png", color: 'ffa300' },
     { id: 5, value: '<span>$10/nE-Voucher', isWin: true, img: "./assets/images/e-Voucher 10.png", color: '4643e6' },
-    { id: 6, value: 'Better Luck/nNext Time3', isWin: false, img: "./assets/images/e-Voucher 10.png", color: 'ffa300' }
+    { id: 6, value: 'Better Luck/nNext Time', isWin: false, img: "./assets/images/Sad Emoji.png", color: 'ffa300' }
 ]
 
 // used to get prize
@@ -74,7 +74,7 @@ let audioInterval;
 const tickSound = new Audio('./assets/tick.mp3');
 
 playBtn.addEventListener('click', () => {
-    let input = 6//Math.floor(Math.random() * numberOfPrizes);
+    let input = getParameterByName('prize') ? Number(getParameterByName('prize')) : 6//Math.floor(Math.random() * numberOfPrizes);
     playBtn.style.pointerEvents = 'none';
     rotate_deg = calculateRotation(input);
     let counter = 0;
@@ -287,5 +287,5 @@ function getParameterByName(name, url = window.location.href) {
 
 window.onload = () => {
     initWheel();
-    if(getParameterByName('id')) alert("ID Parameter: " + getParameterByName('id'));
+    if(getParameterByName('prize')) alert("Prize Parameter: " + getParameterByName('prize'));
 }
