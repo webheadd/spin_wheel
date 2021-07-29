@@ -71,7 +71,6 @@ table {
 html {
   font-family: "Epson";
   font-size: 10px;
-  letter-spacing: 1px;
 }
 
 body {
@@ -143,38 +142,43 @@ body {
 
 .container {
   position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  display: -ms-grid;
+  display: grid;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
+  -ms-grid-columns: 1fr auto;
+      grid-template-columns: 1fr auto;
+      grid-template-areas: "one three" "two three";
   width: 100%;
   height: auto;
   overflow: hidden;
   margin-top: 20px;
-  margin-left: 10px;
+  color: #fff;
 }
 
 @media only screen and (max-width: 1049.98px) {
   .container {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    padding: 10px 0;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
-    margin-top: 0;
+    -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+        grid-template-areas: "one" "three" "two";
+    margin-bottom: 20px;
+    padding: 20px 0;
+    grid-row-gap: 100px;
+    justify-items: center;
   }
 }
 
-.container .left,
-.container .right {
-  margin: 50px 0;
+@media only screen and (max-width: 767.98px) {
+  .container {
+    grid-row-gap: 70px;
+  }
+}
+
+@media only screen and (max-width: 400.98px) {
+  .container {
+    grid-row-gap: 50px;
+  }
 }
 
 .container .wheel_container {
@@ -189,7 +193,11 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  margin: 20px 0;
+  margin: 20px 10px 20px 0;
+  -ms-grid-row: 1;
+  -ms-grid-row-span: 2;
+  -ms-grid-column: 2;
+  grid-area: three;
   border: 35px solid #D11A80;
   -webkit-box-shadow: -12px 3px 0px #9D0165;
           box-shadow: -12px 3px 0px #9D0165;
@@ -205,7 +213,8 @@ body {
 
 @media only screen and (max-width: 1049.98px) {
   .container .wheel_container {
-    margin: 0;
+    margin: 0 0 0 10px;
+    width: 500px;
   }
 }
 
@@ -218,6 +227,16 @@ body {
 @media only screen and (max-width: 575.98px) {
   .container .wheel_container {
     border-width: 20px;
+    width: 80vw;
+    height: 80vw;
+  }
+}
+
+@media only screen and (max-width: 575.98px) {
+  .container .wheel_container {
+    border-width: 17px;
+    -webkit-box-shadow: -8px 3px 0px #9D0165;
+            box-shadow: -8px 3px 0px #9D0165;
   }
 }
 
@@ -329,11 +348,7 @@ body {
           transform: rotate(135deg) skewY(-45deg) scale(0.707, 1.414) translate(50%);
 }
 
-.container .left {
-  color: #fff;
-}
-
-.container .left .slogan {
+.container .slogan {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -347,9 +362,12 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: one;
 }
 
-.container .left .slogan div {
+.container .slogan div {
   background: #5037FF;
   width: -webkit-fit-content;
   width: -moz-fit-content;
@@ -360,25 +378,25 @@ body {
 }
 
 @media only screen and (max-width: 1330.98px) {
-  .container .left .slogan div {
+  .container .slogan div {
     font-size: 12rem;
   }
 }
 
 @media only screen and (max-width: 1199.98px) {
-  .container .left .slogan div {
+  .container .slogan div {
     font-size: 10.5rem;
   }
 }
 
 @media only screen and (max-width: 575.98px) {
-  .container .left .slogan div {
+  .container .slogan div {
     font-size: 16vw;
     border-radius: 10px;
   }
 }
 
-.container .left .slogan .subtitle {
+.container .slogan .subtitle {
   padding-bottom: 10px;
   font-size: 5rem;
   margin-bottom: -15px;
@@ -386,51 +404,64 @@ body {
 }
 
 @media only screen and (max-width: 1330.98px) {
-  .container .left .slogan .subtitle {
+  .container .slogan .subtitle {
     font-size: 4.6rem;
   }
 }
 
 @media only screen and (max-width: 1199.98px) {
-  .container .left .slogan .subtitle {
+  .container .slogan .subtitle {
     font-size: 4rem;
   }
 }
 
 @media only screen and (max-width: 575.98px) {
-  .container .left .slogan .subtitle {
+  .container .slogan .subtitle {
     font-size: 6vw;
     margin-bottom: -10px;
   }
 }
 
-.container .left .prize_container .title {
+.container .prize_container {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: two;
+}
+
+@media only screen and (max-width: 575.98px) {
+  .container .prize_container {
+    width: 90%;
+  }
+}
+
+.container .prize_container .title {
   font-size: 4rem;
   text-align: center;
-  margin: 70px 0 50px 0;
+  margin-bottom: 50px;
 }
 
 @media only screen and (max-width: 1199.98px) {
-  .container .left .prize_container .title {
+  .container .prize_container .title {
     font-size: 2.5rem;
-    margin: 60px 0 40px 0;
+    margin-bottom: 40px;
   }
 }
 
 @media only screen and (max-width: 1049.98px) {
-  .container .left .prize_container .title {
+  .container .prize_container .title {
     font-size: 3rem;
+    margin-bottom: 10px;
   }
 }
 
 @media only screen and (max-width: 575.98px) {
-  .container .left .prize_container .title {
-    font-size: 6vw;
-    margin: 40px 0 40px 0;
+  .container .prize_container .title {
+    font-size: 5vw;
+    margin-bottom: 30px;
   }
 }
 
-.container .left .prize_container .prizes {
+.container .prize_container .prizes {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr 1fr 1fr;
@@ -439,32 +470,30 @@ body {
 }
 
 @media only screen and (max-width: 1199.98px) {
-  .container .left .prize_container .prizes {
+  .container .prize_container .prizes {
     grid-gap: 50px;
   }
 }
 
 @media only screen and (max-width: 1049.98px) {
-  .container .left .prize_container .prizes {
+  .container .prize_container .prizes {
     grid-gap: 100px;
   }
 }
 
 @media only screen and (max-width: 767.98px) {
-  .container .left .prize_container .prizes {
+  .container .prize_container .prizes {
     grid-gap: 50px;
   }
 }
 
 @media only screen and (max-width: 575.98px) {
-  .container .left .prize_container .prizes {
-    -ms-grid-columns: 1fr;
-        grid-template-columns: 1fr;
-    grid-gap: 0;
+  .container .prize_container .prizes {
+    grid-gap: 20px;
   }
 }
 
-.container .left .prize_container .prizes .prize {
+.container .prize_container .prizes .prize {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -480,29 +509,53 @@ body {
           flex-direction: column;
 }
 
-.container .left .prize_container .prizes .prize img {
+.container .prize_container .prizes .prize img {
   max-width: 160px;
 }
 
 @media only screen and (max-width: 1199.98px) {
-  .container .left .prize_container .prizes .prize img {
+  .container .prize_container .prizes .prize img {
     max-width: 130px;
   }
 }
 
 @media only screen and (max-width: 1049.98px) {
-  .container .left .prize_container .prizes .prize img {
+  .container .prize_container .prizes .prize img {
     max-width: 150px;
   }
 }
 
-.container .left .prize_container .prizes .prize span {
+@media only screen and (max-width: 575.98px) {
+  .container .prize_container .prizes .prize img {
+    max-width: 100px;
+  }
+}
+
+@media only screen and (max-width: 400.98px) {
+  .container .prize_container .prizes .prize img {
+    max-width: 80px;
+  }
+}
+
+.container .prize_container .prizes .prize span {
   font-size: 3rem;
 }
 
 @media only screen and (max-width: 1199.98px) {
-  .container .left .prize_container .prizes .prize span {
+  .container .prize_container .prizes .prize span {
     font-size: 2.7rem;
+  }
+}
+
+@media only screen and (max-width: 575.98px) {
+  .container .prize_container .prizes .prize span {
+    font-size: 2rem;
+  }
+}
+
+@media only screen and (max-width: 400.98px) {
+  .container .prize_container .prizes .prize span {
+    font-size: 1.8rem;
   }
 }
 
@@ -772,5 +825,23 @@ body {
   margin: 20px auto;
   width: 95%;
   text-align: center;
+}
+
+@media only screen and (max-width: 767.98px) {
+  .bottom {
+    font-size: 2.4rem;
+  }
+}
+
+@media only screen and (max-width: 575.98px) {
+  .bottom {
+    font-size: 2.1rem;
+  }
+}
+
+@media only screen and (max-width: 400.98px) {
+  .bottom {
+    font-size: 1.8rem;
+  }
 }
 /*# sourceMappingURL=wheel.css.map */

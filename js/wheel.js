@@ -1,3 +1,5 @@
+const API_URL = 'https://kahon.org/spinwheel/';
+
 const container = document.querySelector('.wheel_container');
 const wheel_canvas = document.getElementById('wheel');
 const playBtn = document.getElementById('rotate');
@@ -14,7 +16,7 @@ const prize_modal = win_modal.querySelector('.prize');
 // wheel_canvas.style.width = wheel_canvas.clientWidth/2 + 'px';
 
 const canvas_size = (wheel_canvas.clientWidth + wheel_canvas.clientHeight) / 2; 
-
+console.log(canvas_size);
 const scale = 2;
 
 wheel_canvas.width = canvas_size * scale;
@@ -81,8 +83,11 @@ playBtn.addEventListener('click', () => {
     audioInterval = function() {
         
         if(counter <= (rotate_deg/animationLength)*.7) {
-            counter += ((rotate_deg/animationLength)*.20)*.10;
-            playSoundEffect();
+            counter += ((rotate_deg/animationLength)*.02);
+            // playSoundEffect();
+
+            console.log(counter, rotate_deg/animationLength);
+            playSound(clickingBuffer, 0, 1);
             setTimeout(audioInterval, counter);
         }
         
@@ -285,7 +290,53 @@ function getParameterByName(name, url = window.location.href) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+async function getData(url) {
+    const headers = {
+      'Content-Type': 'application/json'
+    }
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: headers,
+        mode: 'cors'
+    })
+
+    return response.json();
+}
+
+
+var clickingBuffer = null;
+// Fix up prefixing
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+var ctx = new AudioContext();
+async function loadClickSound(url) {
+    const response = await fetch(url);
+    response.arrayBuffer().then(res => {
+        ctx.decodeAudioData(res, function(buffer) {
+            if (!buffer) {
+                console.log('Error decoding file data: ' + url);
+                return;
+            }
+            console.log(buffer, "QWEQWE");
+            clickingBuffer = buffer;
+        });
+    })
+    
+}
+
+function playSound(buffer, time, volume) {              
+  var source = ctx.createBufferSource();   // creates a sound source
+  source.buffer = buffer;                     // tell the source which sound to play
+  source.connect(ctx.destination);          // connect the source to the context's destination (the speakers)
+  var gainNode = ctx.createGain();          // Create a gain node
+  source.connect(gainNode);                     // Connect the source to the gain node
+  gainNode.connect(ctx.destination);        // Connect the gain node to the destination
+  gainNode.gain.value = volume;                  // Set the volume
+  source.start(time);                           // play the source at the deisred time 0=now    
+}
+
 window.onload = () => {
     initWheel();
+    loadClickSound('assets/tick.mp3');
+    getData('https://jsonplaceholder.typicode.com/users').then(res => console.log(res))
     if(getParameterByName('prize')) alert("Prize Parameter: " + getParameterByName('prize'));
 }
