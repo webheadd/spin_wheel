@@ -337,6 +337,6 @@ function playSound(buffer, time, volume) {
 window.onload = () => {
     initWheel();
     loadClickSound('assets/tick.mp3');
-    getData('https://jsonplaceholder.typicode.com/users').then(res => console.log(res))
+    getData('https://kahon.org/spinwheel/?f=prizes').then(res => console.log(res))
     if(getParameterByName('prize')) alert("Prize Parameter: " + getParameterByName('prize'));
 }
