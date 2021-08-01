@@ -1,5 +1,3 @@
-const API_URL = 'https://kahon.org/spinwheel/';
-
 const container = document.querySelector('.wheel_container');
 const wheel_canvas = document.getElementById('wheel');
 const playBtn = document.getElementById('rotate');
@@ -13,272 +11,266 @@ const prize_modal = win_modal.querySelector('.prize');
 
 
 
-// wheel_canvas.style.width = wheel_canvas.clientWidth/2 + 'px';
+class SpinWheel {
+    
+    constructor(wheel_canvas, context, prizes, container) {
+        this.container = container;
+        this.wheel_canvas = wheel_canvas;
+        this.context = context;
+        this.prizes = prizes;
+        this.reversedPrizes = [...this.prizes, []].reverse();
 
-const canvas_size = (wheel_canvas.clientWidth + wheel_canvas.clientHeight) / 2; 
-console.log(canvas_size);
-const scale = 2;
+        this.canvas_size = (this.wheel_canvas.clientWidth + this.wheel_canvas.clientHeight) / 2;
+        this.scale = 2;
+        this.width = this.canvas_size * this.scale;
+        this.height = this.canvas_size * this.scale;
 
-wheel_canvas.width = canvas_size * scale;
-wheel_canvas.height = canvas_size * scale;
+        this.x = this.wheel_canvas.clientWidth/2;
+        this.y = this.wheel_canvas.clientHeight/2;
 
-wheel_canvas.style.width = canvas_size;
-wheel_canvas.style.height = canvas_size;
-
-context.scale(scale, scale);
-
-const animationLength = 10;
-
-const x = wheel_canvas.clientWidth/2,
-      y = wheel_canvas.clientHeight/2;
-
-
-const radius = 360;
-
-
-
-const prizes = [
-    { id: 1, value: '<span>$50/nE-Voucher', isWin: true, img: "./assets/images/e-Voucher 50.png", color: '4643e6' },
-    { id: 2, value: 'Better Luck/nNext Time', isWin: false, img: "./assets/images/Sad Emoji.png", color: 'ffa300' },
-    { id: 3, value: 'Mystery/nGift', isWin: true, img: "./assets/images/Mystery Gift.png", color: '4643e6' },
-    { id: 4, value: 'Better Luck/nNext Time', isWin: false, img: "./assets/images/Sad Emoji.png", color: 'ffa300' },
-    { id: 5, value: '<span>$10/nE-Voucher', isWin: true, img: "./assets/images/e-Voucher 10.png", color: '4643e6' },
-    { id: 6, value: 'Better Luck/nNext Time', isWin: false, img: "./assets/images/Sad Emoji.png", color: 'ffa300' }
-]
-
-// used to get prize
-const reversedPrizes = [...prizes, []].reverse();
-console.log(reversedPrizes);
-
-// total prizes count
-let numberOfPrizes = prizes.length;
-
-// 1 segment = 1 prize
-let prize = radius/numberOfPrizes;
-
-// set prize angle
-let angle = 2 * Math.PI / numberOfPrizes;
-
-// size of each segment
-let prize_depth = canvas_size/2;
-
-// BULB
-let numberOfBulb = 8;
-let bulb = {
-    width: x/20,
-    height: y/20
-}
-
-let rotate_deg = 0;
-
-let audioInterval;
-
-const tickSound = new Audio('./assets/tick.mp3');
-
-playBtn.addEventListener('click', () => {
-    let input = getParameterByName('prize') ? Number(getParameterByName('prize')) : 6//Math.floor(Math.random() * numberOfPrizes);
-    playBtn.style.pointerEvents = 'none';
-    rotate_deg = calculateRotation(input);
-    let counter = 0;
-    audioInterval = function() {
+        this.radius = 360;
         
-        if(counter <= (rotate_deg/animationLength)*.7) {
-            counter += ((rotate_deg/animationLength)*.02);
-            // playSoundEffect();
+        this.numberOfBulb = 8;
+        this.bulbW = this.x/2;
+        this.bulbH = this.y/2;
 
-            console.log(counter, rotate_deg/animationLength);
-            playSound(clickingBuffer, 0, 1);
-            setTimeout(audioInterval, counter);
-        }
+        this.segment_depth = this.canvas_size/2;
+        this.numberOfPrizes = this.prizes.length;
+        this.angle = 2 * Math.PI / this.numberOfPrizes;
+        this.prize = this.radius/this.numberOfPrizes;
+
+        this.rotate_deg = 0;
+        this.animationLength = 5;
+
+        // audio
+        this.clickingBuffer = null;
+        this.audio_ctx = new AudioContext();
+        this.audioInterval = null;
+
+        this.counter = 0;
         
     }
-    setTimeout(audioInterval, counter);
-    wheel_canvas.style.transition = `all ${animationLength}s ease-out`;
-    wheel_canvas.style.transform = `rotate(${rotate_deg}deg)`;
-})
 
-wheel_canvas.addEventListener('transitionend', () => {
-    clearInterval(audioInterval);
-    playBtn.style.pointerEvents = 'auto';
-    wheel_canvas.style.transition = 'none';
-    const actualDeg = ((rotate_deg) % 360);
-    getPrize(actualDeg + 90); // +90 to make results at 0 deg
-    wheel_canvas.style.transform = `rotate(${actualDeg}deg)`;
-})
+    draw() {
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.loadClickSound('assets/tick.mp3');
 
-modal_btn.addEventListener('click', () => {
-    lose_modal.classList.remove('showModal');
-})
+        this.wheel_canvas.width = this.width;
+        this.wheel_canvas.height = this.height;
 
-win_modal.addEventListener('click', () => {
-    prize_modal.innerHTML = '';
-    win_modal.classList.remove('showModal');
-})
+        this.wheel_canvas.style.width = this.canvas_size;
+        this.wheel_canvas.style.height = this.canvas_size;
+        this.context.scale(this.scale, this.scale);
+        this.drawSegments();
+        this.drawLightBulbs();
+    }
 
-function initWheel() {
-    drawSegments(prize_depth);
-    drawLightBulbs();
-}
+    drawSegments() {
+        this.prizes.forEach((p, i)=> {
+            const startAngle = i*this.angle;
+            const endAngle = (i+1)*this.angle;
+            this.context.beginPath();
 
-function getPrize(actualDeg) {
-    let computedPrize = Math.ceil(actualDeg / prize);
-    let prize_received;
-    if(computedPrize > numberOfPrizes) computedPrize = computedPrize - numberOfPrizes;
-    prize_received = reversedPrizes[computedPrize]
-    openResultModal(prize_received);
-}
-
-function openResultModal(p) {
-    console.log(p);
-    if(!p.isWin) {
-        setTimeout(() => {
-            lose_modal.classList.add('showModal');
-        }, 100)
-    } else {
-        setTimeout(() => {
+            if(i % 2 == 0) {
+                // EVEN
+                this.context.fillStyle = `${segmentColors[1]}`;
+            } else {
+                this.context.fillStyle = `${segmentColors[2]}`;
+            }
+            // context.fillStyle = `${segmentColors[i % prizes.length]}`;
             
+
+
+            this.context.moveTo(this.x, this.y);
+            this.context.arc(this.x, this.y, this.segment_depth, startAngle, endAngle);
+            this.context.lineTo(this.x, this.y)
+            this.context.fill();
+            this.context.closePath();
+
+            // Draw Label texts
+            this.drawText(p, startAngle, endAngle);
+        })
+        
+        this.wheel_canvas.style.transform = `rotate(${1.8 * Math.PI * this.radius/this.numberOfPrizes}deg)`;
+    }
+
+    drawText(p, startAngle, endAngle) {
+        this.context.save();
+
+        
+        let fontSize = this.getFontSize()*1.2;
+
+        if(this.numberOfPrizes <= 6) {
+            let text = p.title.includes(" ") ? p.title.split(" ") : [p.title];
+            this.context.translate(this.x + Math.cos(startAngle + this.angle / 2) * (this.x/1.5), this.y + Math.sin(startAngle + this.angle / 2) * (this.y/1.5));
+            this.context.rotate(startAngle + this.angle / 2 + Math.PI / 2);
+
+            this.context.beginPath();
+
+            this.context.textAlign = "left";
+            this.context.fillStyle = "#fff";
+
+            text.forEach((txt, x) => { 
+                
+                if(txt.includes('<span>')) {
+                    txt = txt.split('<span>')[1];
+                    fontSize = this.getFontSize() * 3.2;
+                }
+
+                this.context.font = `${fontSize}px Epson`;
+                this.context.fillText(txt.toUpperCase(), -this.context.measureText(txt.toUpperCase()).width / 2, (fontSize*x));
+                
+            })
+            
+        } else {
+            this.context.translate(this.x, this.y);
+            this.context.rotate(startAngle + this.angle / 2);
+
+            this.context.beginPath();
+
+            this.context.textAlign = "center";
+            this.context.fillStyle = "#fff";
+            
+            this.context.font = `${fontSize}px Epson`;
+            this.context.fillText(p.title.toUpperCase(), this.x/1.7, this.y*0.05);
+        }
+        this.context.restore();
+    }
+
+    getFontSize() {
+        const fontBase = this.wheel_canvas.clientWidth,
+        fontSize = this.wheel_canvas.clientWidth/20;
+        const ratio = fontSize / fontBase;
+        const size = this.canvas_size * ratio;
+        return (size|0);
+    }
+
+    rotate(winningID) {
+        let input = this.reversedPrizes.findIndex(p => p.id === winningID);
+        this.rotate_deg = this.calculateRotation(input);
+
+        this.audioInterval = () => {
+            if(this.counter <= (this.rotate_deg/this.animationLength)*.35) {
+                this.counter += ((this.rotate_deg/this.animationLength)*.020);
+                this.playSound(this.clickingBuffer, 0, 0);
+                setTimeout(this.audioInterval, this.counter);
+            } else {
+                this.counter = 0;
+            }
+
+            
+        }
+        setTimeout(this.audioInterval, this.counter);
+        
+        this.wheel_canvas.style.transition = `all ${this.animationLength}s ease-out`;
+        this.wheel_canvas.style.transform = `rotate(${this.rotate_deg}deg)`;
+    }
+
+    calculateRotation(p) {
+        const rng = Math.random() * this.prize-1;
+        const computedAngle = (p * this.prize) - rng - 90;
+        const numOfRotation = this.radius * 20; //20 rotations 
+        const stopValue = Math.ceil(computedAngle + numOfRotation);
+        return stopValue;
+    }
+
+    getPrize(actualDeg) {
+        let computedPrize = Math.ceil(actualDeg / this.prize);
+        let prize_received;
+        if(computedPrize > this.numberOfPrizes) computedPrize = computedPrize - this.numberOfPrizes;
+        prize_received = this.reversedPrizes[computedPrize]
+        this.openResultModal(prize_received);
+    }
+
+    transitionEnd() {
+        clearInterval(this.audioInterval);
+
+        
+        this.wheel_canvas.style.transition = 'none';
+
+        const actualDeg = ((this.rotate_deg) % this.radius);
+
+        this.getPrize(actualDeg + 90); // +90 to make results at 0 deg
+
+        this.wheel_canvas.style.transform = `rotate(${actualDeg}deg)`;
+    }
+
+    drawLightBulbs() {
+        const borderSize = (this.container.offsetWidth - this.container.clientWidth) / 2; //get outer border size
+        const containerWidth = this.container.clientWidth + borderSize;
+        
+        let angle = this.radius - 90; //first angle
+        let dangle = this.radius / this.numberOfBulb;
+
+        for( let i = 0; i < this.numberOfBulb; i++ ){
+            let blb = document.createElement('div');
+            blb.classList = 'bulb';
+            blb.style.width = `${borderSize/1.1}px`;
+            blb.style.height = `${borderSize/1.1}px`;
+            blb.style.margin = `-${(borderSize)/2}px`;
+            blb.style.zIndex = 10;
+            angle += dangle;
+            blb.style.transform = `rotate(${angle}deg) translate(${containerWidth / 2}px) rotate(-${angle}deg)`;
+            this.container.appendChild(blb);
+        }
+    }
+
+    async loadClickSound(url) {
+        const response = await fetch(url);
+        response.arrayBuffer().then(res => {
+            this.audio_ctx.decodeAudioData(res, (buffer) => {
+                if (!buffer) {
+                    console.log('Error decoding file data: ' + url);
+                    return;
+                }
+                // console.log(buffer, "QWEQWE");
+                this.clickingBuffer = buffer;
+                
+            });
+        })
+        
+    }
+
+    playSound(buffer, time, volume) {
+        let source = this.audio_ctx.createBufferSource();
+        let gainNode = this.audio_ctx.createGain();
+        
+        source.buffer = buffer;
+        source.connect(this.audio_ctx.destination);
+        source.connect(gainNode);
+
+        
+
+        gainNode.connect(this.audio_ctx.destination);
+        gainNode.gain.value = volume;
+
+        source.start(time); 
+    }
+    
+    openResultModal(p) {
+        setTimeout(() => {
             let img = document.createElement('img');
             let span = document.createElement('span');
-            img.src = p.img;
-            span.innerHTML = p.value.replace('/n', ' ');
+            img.src = p.image;
+            span.innerHTML = p.title;
             prize_modal.appendChild(img);
             prize_modal.appendChild(span);
             win_modal.classList.add('showModal');
         }, 100)
     }
+
 }
-
-function calculateRotation(p) {
-    const rng = Math.random() * prize-1;
-    const computedAngle = (p * prize) - rng - 90;
-    const numOfRotation = radius * 20; //20 rotations 
-    const stopValue = Math.ceil(computedAngle + numOfRotation);
-    return stopValue;
-}
-
-function drawLightBulbs() {
-    const borderSize = (container.offsetWidth - container.clientWidth) / 2; //get outer border size
-    const containerWidth = container.clientWidth + borderSize;
-    
-    let angle = radius - 90; //first angle
-    let dangle = radius / numberOfBulb;
-
-    for( let i = 0; i < numberOfBulb; i++ ){
-        let blb = document.createElement('div');
-        blb.classList = 'bulb';
-        blb.style.width = `${borderSize/1.1}px`;
-        blb.style.height = `${borderSize/1.1}px`;
-        blb.style.margin = `-${(borderSize)/2}px`;
-        blb.style.zIndex = 10;
-        angle += dangle;
-        blb.style.transform = `rotate(${angle}deg) translate(${containerWidth / 2}px) rotate(-${angle}deg)`;
-        container.appendChild(blb);
+// END OF WHEEL CLASS
+async function getData(url) {
+    const headers = {
+      'Content-Type': 'application/json'
     }
-}
-
-function drawSegments(r) {
-    prizes.forEach((p, i)=> {
-        const startAngle = i*angle;
-        const endAngle = (i+1)*angle;
-
-        context.beginPath();
-        context.fillStyle = `#${p.color}`;
-        context.moveTo(x, y);
-        context.arc(x, y, r, startAngle, endAngle);
-        context.lineTo(x, y)
-        context.fill();
-        context.closePath();
-        // Draw Label texts
-        drawText(p, startAngle, endAngle);
-
-        // PENDING
-        // if(!p.isWin) {
-        //     drawIcons(p, startAngle, endAngle);
-        // }
-        
-        
-    })
-    
-    wheel_canvas.style.transform = `rotate(${1.8 * Math.PI * radius/numberOfPrizes}deg)`;
-}
-
-function drawText(p, startAngle, endAngle) {
-    context.save();
-
-    let text = p.value.split("/n");
-
-    context.translate(x + Math.cos(startAngle + angle / 2) * (x/1.6), y + Math.sin(startAngle + angle / 2) * (y/1.6));
-    context.rotate(startAngle + angle / 2 + Math.PI / 2);    
-
-    context.beginPath();
-
-    context.textAlign = "left";
-    context.fillStyle = "#fff";
-    text.forEach((txt, x) => { 
-        let fontSize;
-
-        if(txt.includes('<span>')) {
-
-            txt = txt.split('<span>')[1];
-            fontSize = getFont() * 3.2;
-
-        } else {
-
-            fontSize = getFont()*1.2;
-
-        }
-
-        context.font = `${fontSize}px Epson`;
-        context.fillText(txt.toUpperCase(), -context.measureText(txt.toUpperCase()).width / 2, (fontSize*x));
+    const response = await fetch(url, {
+        method: 'GET',
+        mode: 'cors'
     })
 
-    context.restore();
-}
-
-function drawIcons(p, startAngle, endAngle) {
-    console.log("DRAW");
-    let img = new Image();
-    img.src = p.img;
-    img.width = canvas_size*0.2;
-    img.height = canvas_size*0.2;
-    let imageLeft = 0,
-        imageTop = 0,
-        imageAngle = 0;
-
-    //check if image has loaded
-    if(img.height || img.width) {
-        // console.log(img.width, img.height);
-        imageLeft = (x - (img.width));
-        imageTop = (y - (img.height))/2;
-        imageAngle = (startAngle + ((endAngle - startAngle)/2));
-    }
-
-    context.save();
-    context.translate(x, y);
-
-    console.log(x, y);
-    console.log(imageLeft, imageTop);
-
-    context.rotate(imageAngle);
-    // console.log(imageLeft, imageTop, imageAngle);
-    context.translate(-x, -y);
-
-    context.drawImage(img, imageLeft, imageTop, 80, 80);
-
-    context.restore();
-}
-
-function playSoundEffect() {
-    let soundCopy = tickSound.cloneNode(true);
-    soundCopy.play();
-}
-
-function getFont() {
-    const fontBase = wheel_canvas.clientWidth,
-    fontSize = wheel_canvas.clientWidth/20;
-    const ratio = fontSize / fontBase;
-    const size = canvas_size * ratio;
-    return (size|0);
+    return response.json();
 }
 
 function getParameterByName(name, url = window.location.href) {
@@ -290,53 +282,39 @@ function getParameterByName(name, url = window.location.href) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-async function getData(url) {
-    const headers = {
-      'Content-Type': 'application/json'
-    }
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: headers,
-        mode: 'cors'
-    })
 
-    return response.json();
-}
-
-
-var clickingBuffer = null;
-// Fix up prefixing
-window.AudioContext = window.AudioContext || window.webkitAudioContext;
-var ctx = new AudioContext();
-async function loadClickSound(url) {
-    const response = await fetch(url);
-    response.arrayBuffer().then(res => {
-        ctx.decodeAudioData(res, function(buffer) {
-            if (!buffer) {
-                console.log('Error decoding file data: ' + url);
-                return;
-            }
-            console.log(buffer, "QWEQWE");
-            clickingBuffer = buffer;
-        });
-    })
-    
-}
-
-function playSound(buffer, time, volume) {              
-  var source = ctx.createBufferSource();   // creates a sound source
-  source.buffer = buffer;                     // tell the source which sound to play
-  source.connect(ctx.destination);          // connect the source to the context's destination (the speakers)
-  var gainNode = ctx.createGain();          // Create a gain node
-  source.connect(gainNode);                     // Connect the source to the gain node
-  gainNode.connect(ctx.destination);        // Connect the gain node to the destination
-  gainNode.gain.value = volume;                  // Set the volume
-  source.start(time);                           // play the source at the deisred time 0=now    
-}
 
 window.onload = () => {
-    initWheel();
-    loadClickSound('assets/tick.mp3');
-    getData('https://kahon.org/spinwheel/?f=prizes').then(res => console.log(res))
-    if(getParameterByName('prize')) alert("Prize Parameter: " + getParameterByName('prize'));
+    let wheel;
+    getData('https://kahon.org/spinwheel/?f=prizes').then(res => {
+        wheel = new SpinWheel(wheel_canvas, context, res.prizes, container);
+        wheel.draw();
+        
+        playBtn.addEventListener('click', () => {
+            let winningID = 1; //ID 1 as default prize if no parameter available
+            if(getParameterByName('prize')) {
+                winningID = Number(getParameterByName('prize'));
+            }
+            // console.log(winningID);
+            wheel.rotate(winningID);//pass prize ID
+        });
+
+        wheel_canvas.addEventListener('transitionend', () => {
+            playBtn.style.pointerEvents = 'auto';
+            wheel.transitionEnd();
+        })
+
+        modal_btn.addEventListener('click', () => {
+            lose_modal.classList.remove('showModal');
+        })
+
+        win_modal.addEventListener('click', () => {
+            prize_modal.innerHTML = '';
+            win_modal.classList.remove('showModal');
+        })
+
+    }).catch(err => {
+        console.log(err);
+    })
+    // if(getParameterByName('prize')) alert("Prize Parameter: " + getParameterByName('prize'));
 }
