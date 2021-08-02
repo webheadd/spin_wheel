@@ -20,11 +20,13 @@ body {
 }
 
 .main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  position: relative;
+  .main_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+  }
 }
 
 #wheel {
@@ -58,8 +60,8 @@ body {
   align-items: center;
   grid-template-columns: 1fr auto;
   grid-template-areas:
-                      "one three"
-                      "two three";
+    "one three"
+    "two three";
   // grid-column-gap: 20px;
   width: 100%;
   height: auto;
@@ -70,10 +72,10 @@ body {
   @include media_query(md-tablet) {
     grid-template-columns: 1fr;
     grid-template-areas:
-                      "one"
-                      "three"
-                      "two";
-    
+      "one"
+      "three"
+      "two";
+
     margin-bottom: 20px;
     padding: 20px 0;
     grid-row-gap: 100px;
@@ -94,7 +96,7 @@ body {
     justify-content: center;
     margin: 20px 10px 20px 0;
     grid-area: three;
-    
+
     border: 35px solid $wheel-border-light;
     box-shadow: -12px 3px 0px $wheel-border-dark;
 
@@ -210,7 +212,6 @@ body {
       }
     }
   }
-
 
   .slogan {
     display: flex;
@@ -328,7 +329,6 @@ body {
           @include media_query(xxs-phone) {
             max-width: 80px;
           }
-          
         }
 
         span {
@@ -385,7 +385,6 @@ body {
     @include media_query(sm-phone) {
       height: fit-content;
     }
-    
 
     .bottom {
       margin: 0 auto;
@@ -400,16 +399,16 @@ body {
       background: $wheel-prize-secondary;
 
       span {
-          font-size: 6rem;
+        font-size: 6rem;
 
-          @include media_query(xxs-phone) {
-            font-size: 5.5rem;
-            display: block;
-          }
+        @include media_query(xxs-phone) {
+          font-size: 5.5rem;
+          display: block;
+        }
 
-          @include media_query(xs-phone) {
-            font-size: 4rem;
-          }
+        @include media_query(xs-phone) {
+          font-size: 4rem;
+        }
       }
 
       @include media_query(xs-phone) {
@@ -479,7 +478,7 @@ body {
       padding: 8px 20px;
       border-radius: 8px;
       font-size: 8rem;
-      
+
       @include media_query(xs-phone) {
         padding: 5px 15px;
         font-size: 5.5rem;
@@ -545,4 +544,15 @@ body {
   @include media_query(xxs-phone) {
     font-size: 1.8rem;
   }
+}
+
+.loading {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 3rem;
+  position: absolute;
 }

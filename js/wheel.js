@@ -44,7 +44,7 @@ class SpinWheel {
 
         // audio
         this.clickingBuffer = null;
-        this.audio_ctx = new AudioContext();
+        this.audio_ctx;
         this.audioInterval = null;
 
         this.counter = 0;
@@ -53,6 +53,8 @@ class SpinWheel {
 
     draw() {
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.audio_ctx = this.audioContextCheck();
+        console.log(this.audio_ctx.state);
         this.loadClickSound('assets/tick.mp3');
 
         this.wheel_canvas.width = this.width;
@@ -146,24 +148,27 @@ class SpinWheel {
     }
 
     rotate(winningID) {
-        let input = this.reversedPrizes.findIndex(p => p.id === winningID);
-        this.rotate_deg = this.calculateRotation(input);
+        console.log(this.audio_ctx.state);
+        if(this.audio_ctx.state !== 'suspended') {
+            let input = this.reversedPrizes.findIndex(p => p.id === winningID);
+            this.rotate_deg = this.calculateRotation(input);
 
-        this.audioInterval = () => {
-            if(this.counter <= (this.rotate_deg/this.animationLength)*.35) {
-                this.counter += ((this.rotate_deg/this.animationLength)*.020);
-                this.playSound(this.clickingBuffer, 0, 0);
-                setTimeout(this.audioInterval, this.counter);
-            } else {
-                this.counter = 0;
+            this.audioInterval = () => {
+                if(this.counter <= (this.rotate_deg/this.animationLength)*.35) {
+                    this.counter += ((this.rotate_deg/this.animationLength)*.020);
+                    this.playSound(this.clickingBuffer, 0, 0);
+                    setTimeout(this.audioInterval, this.counter);
+                } else {
+                    this.counter = 0;
+                }
+
+                
             }
-
+            setTimeout(this.audioInterval, this.counter);
             
+            this.wheel_canvas.style.transition = `all ${this.animationLength}s ease-out`;
+            this.wheel_canvas.style.transform = `rotate(${this.rotate_deg}deg)`;
         }
-        setTimeout(this.audioInterval, this.counter);
-        
-        this.wheel_canvas.style.transition = `all ${this.animationLength}s ease-out`;
-        this.wheel_canvas.style.transform = `rotate(${this.rotate_deg}deg)`;
     }
 
     calculateRotation(p) {
@@ -231,6 +236,18 @@ class SpinWheel {
         
     }
 
+    audioContextCheck() {
+        if (typeof AudioContext !== "undefined") {
+            return new AudioContext();
+        } else if (typeof webkitAudioContext !== "undefined") {
+            return new webkitAudioContext();
+        } else if (typeof mozAudioContext !== "undefined") {
+            return new mozAudioContext();
+        } else {
+            throw new Error('AudioContext not supported');
+        }
+    }
+
     playSound(buffer, time, volume) {
         let source = this.audio_ctx.createBufferSource();
         let gainNode = this.audio_ctx.createGain();
@@ -285,18 +302,27 @@ function getParameterByName(name, url = window.location.href) {
 
 
 window.onload = () => {
+    let content = document.querySelector('.main_wrapper');
+    let loader = document.querySelector('.loading');
+    content.style.visibility = 'hidden';
     let wheel;
     getData('https://kahon.org/spinwheel/?f=prizes').then(res => {
+        loader.style.display = 'none';
+        content.style.visibility = 'visible';
         wheel = new SpinWheel(wheel_canvas, context, res.prizes, container);
         wheel.draw();
         
         playBtn.addEventListener('click', () => {
-            let winningID = 1; //ID 1 as default prize if no parameter available
-            if(getParameterByName('prize')) {
-                winningID = Number(getParameterByName('prize'));
-            }
-            // console.log(winningID);
-            wheel.rotate(winningID);//pass prize ID
+            wheel.audio_ctx.resume();
+            console.log(wheel.audio_ctx.state);
+            setTimeout(() => {
+                let winningID = 1; //ID 1 as default prize if no parameter available
+                if(getParameterByName('prize')) {
+                    winningID = Number(getParameterByName('prize'));
+                }
+                // console.log(winningID);
+                wheel.rotate(winningID);//pass prize ID
+            }, 50)
         });
 
         wheel_canvas.addEventListener('transitionend', () => {
