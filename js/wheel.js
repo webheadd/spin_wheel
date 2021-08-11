@@ -13,7 +13,10 @@ const prize_modal = win_modal.querySelector('.prize');
 
 class SpinWheel {
     
-    constructor(wheel_canvas, context, prizes, container) {
+    constructor(wheel_canvas, context, prizes, container, panelID, playID) {
+        this.panelID = panelID;
+        this.playID = playID;
+
         this.container = container;
         this.wheel_canvas = wheel_canvas;
         this.context = context;
@@ -103,7 +106,7 @@ class SpinWheel {
         let fontSize = this.getFontSize()*1.2;
 
         if(this.numberOfPrizes <= 6) {
-            let text = p.title.includes(" ") ? p.title.split(" ") : [p.title];
+            let text = p.Title.includes(" ") ? p.Title.split(" ") : [p.Title];
             this.context.translate(this.x + Math.cos(startAngle + this.angle / 2) * (this.x/1.5), this.y + Math.sin(startAngle + this.angle / 2) * (this.y/1.5));
             this.context.rotate(startAngle + this.angle / 2 + Math.PI / 2);
 
@@ -134,7 +137,7 @@ class SpinWheel {
             this.context.fillStyle = "#fff";
             
             this.context.font = `${fontSize}px Epson`;
-            this.context.fillText(p.title.toUpperCase(), this.x/1.7, this.y*0.05);
+            this.context.fillText(p.Title.toUpperCase(), this.x/1.7, this.y*0.05);
         }
         this.context.restore();
     }
@@ -268,23 +271,39 @@ class SpinWheel {
         setTimeout(() => {
             let img = document.createElement('img');
             let span = document.createElement('span');
-            img.src = p.image;
-            span.innerHTML = p.title;
-            prize_modal.appendChild(img);
-            prize_modal.appendChild(span);
+            img.src = p.Image;
+            span.innerHTML = p.Title;
+            
+            if(p.PanelType === 0) {
+                lose_modal.appendChild(img);
+                lose_modal.appendChild(span);
+                lose_modal.classList.add('showModal');
+                return;
+            }
+
+            win_modal.appendChild(img);
+            win_modal.appendChild(span);
             win_modal.classList.add('showModal');
+
         }, 100)
     }
 
 }
 // END OF WHEEL CLASS
-async function getData(url) {
+async function getData(url, access_token, request_token) {
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-access-token': access_token
     }
+    let body = {
+        "RequestToken": request_token
+    }
+
     const response = await fetch(url, {
-        method: 'GET',
-        mode: 'cors'
+        method: 'POST',
+        mode: 'cors',
+        headers: headers,
+        body: JSON.stringify(body)
     })
 
     return response.json();
@@ -302,45 +321,66 @@ function getParameterByName(name, url = window.location.href) {
 
 
 window.onload = () => {
+    const API_URL = 'https://epson-stw.prm-dev.com';
+    const access_token = 'RD9F647C7CBE042B9BF44DC47A2F4C7E476';
+
     let content = document.querySelector('.main_wrapper');
     let loader = document.querySelector('.loading');
-    content.style.visibility = 'hidden';
     let wheel;
-    getData('https://kahon.org/spinwheel/?f=prizes').then(res => {
-        loader.style.display = 'none';
-        content.style.visibility = 'visible';
-        wheel = new SpinWheel(wheel_canvas, context, res.prizes, container);
-        wheel.draw();
-        
-        playBtn.addEventListener('click', () => {
-            wheel.audio_ctx.resume();
-            console.log(wheel.audio_ctx.state);
-            setTimeout(() => {
-                let winningID = 1; //ID 1 as default prize if no parameter available
-                if(getParameterByName('prize')) {
-                    winningID = Number(getParameterByName('prize'));
-                }
-                // console.log(winningID);
-                wheel.rotate(winningID);//pass prize ID
-            }, 50)
-        });
 
-        wheel_canvas.addEventListener('transitionend', () => {
-            playBtn.style.pointerEvents = 'auto';
-            wheel.transitionEnd();
+
+    // Hide content 
+    content.style.visibility = 'hidden';
+
+    if(getParameterByName('token')) {
+        const request_token = getParameterByName('token');
+        getData(`${API_URL}/api/Game/SpinTheWheel`, access_token, request_token).then(res => {
+            let panelID = null;
+            let playID = null;
+            let panels = null;
+
+            if(res.ResponseCode !== 5000) return alert(res.Message);
+
+            // SUCCESS RESPONSE
+
+            panels = res['Data']['Panels'];
+            panelID = res['Data']['PanelId'];
+            playID = res['Data']['PlayId'];
+
+            loader.style.display = 'none';
+            content.style.visibility = 'visible';
+            wheel = new SpinWheel(wheel_canvas, context, panels, container, panelID, playID);
+            wheel.draw();
+
+            // Events
+            
+            playBtn.addEventListener('click', () => {
+                wheel.audio_ctx.resume();
+
+                setTimeout(() => {
+                    //pass prize ID
+                    wheel.rotate(panelID);
+                }, 50)
+            });
+
+            wheel_canvas.addEventListener('transitionend', () => {
+                playBtn.style.pointerEvents = 'auto';
+                wheel.transitionEnd();
+            })
+
+            modal_btn.addEventListener('click', () => {
+                lose_modal.classList.remove('showModal');
+            })
+
+            win_modal.addEventListener('click', () => {
+                prize_modal.innerHTML = '';
+                win_modal.classList.remove('showModal');
+            })
+
+        }).catch(err => {
+            console.log(err);
         })
-
-        modal_btn.addEventListener('click', () => {
-            lose_modal.classList.remove('showModal');
-        })
-
-        win_modal.addEventListener('click', () => {
-            prize_modal.innerHTML = '';
-            win_modal.classList.remove('showModal');
-        })
-
-    }).catch(err => {
-        console.log(err);
-    })
-    // if(getParameterByName('prize')) alert("Prize Parameter: " + getParameterByName('prize'));
+    } else {
+        console.log("Request Token Unavailable.");
+    }
 }
