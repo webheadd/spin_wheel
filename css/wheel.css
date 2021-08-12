@@ -103,6 +103,52 @@ body {
   position: relative;
 }
 
+.main .landing {
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  color: #fff;
+}
+
+.main .landing .landing_msg {
+  font-size: 5rem;
+  text-align: center;
+  padding: 0 10px;
+}
+
+@media only screen and (max-width: 1049.98px) {
+  .main .landing .landing_msg {
+    font-size: 5rem;
+  }
+}
+
+@media only screen and (max-width: 767.98px) {
+  .main .landing .landing_msg {
+    font-size: 4.5rem;
+  }
+}
+
+@media only screen and (max-width: 400.98px) {
+  .main .landing .landing_msg {
+    font-size: 3.5rem;
+  }
+}
+
+.main .landing .button {
+  margin-top: 50px;
+}
+
 #wheel {
   position: relative;
   font-family: "Epson";
@@ -511,6 +557,7 @@ body {
 
 .container .prize_container .prizes .prize img {
   max-width: 160px;
+  margin-bottom: 10px;
 }
 
 @media only screen and (max-width: 1199.98px) {
@@ -676,12 +723,10 @@ body {
 
 .modal .modal_content .try_again img {
   max-width: 250px;
-  margin: 20px 0;
+  margin: 30px 0;
 }
 
-.modal .modal_content .try_again .button {
-  background: rgba(119, 85, 171, 0.8);
-  border: 2px solid #fff;
+.modal .modal_content .try_again .prize {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -691,20 +736,15 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  color: #fff;
-  width: 100%;
-  padding: 8px 20px;
-  max-width: 150px;
-  font-size: 3rem;
-  text-align: center;
-  border-radius: 10px;
-  cursor: pointer;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-top: -15px;
 }
 
-.modal .modal_content .try_again .button:hover {
-  background: #b1aadb;
-  -webkit-transition: 0.5s background ease-in-out;
-  transition: 0.5s background ease-in-out;
+.modal .modal_content .try_again .prize span {
+  font-size: 5rem;
 }
 
 .win_modal {
@@ -789,31 +829,6 @@ body {
   margin-top: 0 !important;
 }
 
-.win_modal .try_again .prize {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  margin-top: -15px;
-}
-
-.win_modal .try_again .prize img {
-  margin: 10px 0 !important;
-}
-
-.win_modal .try_again .prize span {
-  font-size: 5rem;
-}
-
 .showModal {
   opacity: 1;
   top: 0;
@@ -848,6 +863,21 @@ body {
 .loading {
   height: 100vh;
   width: 100vw;
+  display: none;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #fff;
+  font-size: 3rem;
+  position: absolute;
+}
+
+.button {
+  background: rgba(119, 85, 171, 0.8);
+  border: 2px solid #fff;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -858,7 +888,18 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
   color: #fff;
+  width: 100%;
+  padding: 10px 20px 8px 20px;
+  max-width: 150px;
   font-size: 3rem;
-  position: absolute;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #b1aadb;
+  -webkit-transition: 0.5s background ease-in-out;
+  transition: 0.5s background ease-in-out;
 }
 /*# sourceMappingURL=wheel.css.map */

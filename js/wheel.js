@@ -1,14 +1,13 @@
 const container = document.querySelector('.wheel_container');
 const wheel_canvas = document.getElementById('wheel');
 const playBtn = document.getElementById('rotate');
-const prize_list = document.getElementById('prize_list');
-const prize_input = document.getElementById('prize_input');
 const context = wheel_canvas.getContext('2d');
 const lose_modal = document.querySelector('.lose_modal');
 const win_modal = document.querySelector('.win_modal');
 const modal_btn = document.querySelector('.lose_modal .button');
 const prize_modal = win_modal.querySelector('.prize');
-
+const lose_modal_content = lose_modal.querySelector('.prize');
+const lose_modal_title = lose_modal.querySelector('.title');
 
 
 class SpinWheel {
@@ -103,11 +102,11 @@ class SpinWheel {
         this.context.save();
 
         
-        let fontSize = this.getFontSize()*1.2;
+        let fontSize = this.getFontSize()*1.25;
 
         if(this.numberOfPrizes <= 6) {
             let text = p.Title.includes(" ") ? p.Title.split(" ") : [p.Title];
-            this.context.translate(this.x + Math.cos(startAngle + this.angle / 2) * (this.x/1.5), this.y + Math.sin(startAngle + this.angle / 2) * (this.y/1.5));
+            this.context.translate(this.x + Math.cos(startAngle + this.angle / 2) * (this.x/1.4), this.y + Math.sin(startAngle + this.angle / 2) * (this.y/1.4));
             this.context.rotate(startAngle + this.angle / 2 + Math.PI / 2);
 
             this.context.beginPath();
@@ -115,11 +114,25 @@ class SpinWheel {
             this.context.textAlign = "left";
             this.context.fillStyle = "#fff";
 
+            if(text.length > 2) {
+                let start = 0;
+                let end = 1;
+                let new_arr = [];
+                for(let i = 0; i < text.length; i+=2) {
+                    new_arr.push(text[start] + ' ' + text[end])
+                    end+=2;
+                    start+=2;
+
+                }
+
+                text = new_arr;
+            }
+
             text.forEach((txt, x) => { 
                 
                 if(txt.includes('<span>')) {
                     txt = txt.split('<span>')[1];
-                    fontSize = this.getFontSize() * 3.2;
+                    fontSize = this.getFontSize() * 3.5;
                 }
 
                 this.context.font = `${fontSize}px Epson`;
@@ -153,7 +166,8 @@ class SpinWheel {
     rotate(winningID) {
         console.log(this.audio_ctx.state);
         if(this.audio_ctx.state !== 'suspended') {
-            let input = this.reversedPrizes.findIndex(p => p.id === winningID);
+            let input = this.reversedPrizes.findIndex(p => p.Id === winningID);
+            console.log(input, "QWEQW");
             this.rotate_deg = this.calculateRotation(input);
 
             this.audioInterval = () => {
@@ -272,17 +286,24 @@ class SpinWheel {
             let img = document.createElement('img');
             let span = document.createElement('span');
             img.src = p.Image;
+            img.onerror = function() {
+                img.src = 'https://via.placeholder.com/150';
+                img.style.borderRadius = '50%';
+            }
+            img.alt = p.Title
             span.innerHTML = p.Title;
             
             if(p.PanelType === 0) {
-                lose_modal.appendChild(img);
-                lose_modal.appendChild(span);
+
+                lose_modal_content.appendChild(img);
+                lose_modal_title.appendChild(span);
+
                 lose_modal.classList.add('showModal');
                 return;
             }
 
-            win_modal.appendChild(img);
-            win_modal.appendChild(span);
+            prize_modal.appendChild(img);
+            prize_modal.appendChild(span);
             win_modal.classList.add('showModal');
 
         }, 100)
@@ -301,7 +322,28 @@ async function getData(url, access_token, request_token) {
 
     const response = await fetch(url, {
         method: 'POST',
-        mode: 'cors',
+        // mode: 'cors',
+        headers: headers,
+        body: JSON.stringify(body)
+    })
+
+    return response.json();
+}
+
+async function sendResult(url, access_token, request_token, panelID, playID) {
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-access-token': access_token
+    }
+    let body = {
+        "RequestToken": request_token,
+        "PanelId": panelID,
+        "PlayId": playID
+    }
+
+    const response = await fetch(url, {
+        method: 'POST',
+        // mode: 'cors',
         headers: headers,
         body: JSON.stringify(body)
     })
@@ -318,19 +360,52 @@ function getParameterByName(name, url = window.location.href) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+function setPrizeList(prizes) {
+    const prize_container = document.querySelector('.prizes');
+    if(prizes.length > 0) {
+        prizes.forEach(prize => {
+            if(prize.PanelType !== 0) {
+                let div = document.createElement('div');
+                let img = document.createElement('img');
+                let span = document.createElement('span');
+
+                div.classList = 'prize';
+                img.src = prize.Title;
+                img.alt = prize.Title;
+                img.onerror = function() {
+                    img.src = 'https://via.placeholder.com/150';
+                    img.style.borderRadius = '50%';
+                }
+                span.innerHTML = prize.Title;
+
+                div.appendChild(img);
+                div.appendChild(span);
+
+                prize_container.appendChild(div);
+            }
+        })
+    }
+
+}
+
 
 
 window.onload = () => {
     const API_URL = 'https://epson-stw.prm-dev.com';
     const access_token = 'RD9F647C7CBE042B9BF44DC47A2F4C7E476';
 
+    let isAllowedToPlay = true;
+
     let content = document.querySelector('.main_wrapper');
+    let landing_page = document.querySelector('.landing');
+    let landing_page_msg = landing_page.querySelector('.landing_msg');
+    let landing_page_btn = landing_page.querySelector('.button');
     let loader = document.querySelector('.loading');
     let wheel;
 
 
     // Hide content 
-    content.style.visibility = 'hidden';
+    content.style.display = 'none';
 
     if(getParameterByName('token')) {
         const request_token = getParameterByName('token');
@@ -339,20 +414,39 @@ window.onload = () => {
             let playID = null;
             let panels = null;
 
-            if(res.ResponseCode !== 5000) return alert(res.Message);
-
-            // SUCCESS RESPONSE
-
-            panels = res['Data']['Panels'];
-            panelID = res['Data']['PanelId'];
-            playID = res['Data']['PlayId'];
-
-            loader.style.display = 'none';
-            content.style.visibility = 'visible';
-            wheel = new SpinWheel(wheel_canvas, context, panels, container, panelID, playID);
-            wheel.draw();
+            if(res.ResponseCode === 5100) {
+                isAllowedToPlay = false;
+                landing_page_btn.innerHTML = 'Back to Home';
+                landing_page_msg.innerHTML = res.Message;
+            } else {
+                landing_page_msg.innerHTML = "Welcome to Epson Island Wide Promotion!";
+                landing_page_btn.innerHTML = 'Continue';
+            }
 
             // Events
+            landing_page_btn.addEventListener('click', () => {
+                if(isAllowedToPlay) {
+                    landing_page.style.display = 'none';
+                    loader.style.display = 'flex';
+                    setTimeout(() => {
+                        panels = res['Data']['Panels'];
+                        panelID = res['Data']['PanelId'];
+                        playID = res['Data']['PlayId'];
+
+                        setPrizeList(panels);
+
+                        content.style.display = 'block';
+                        loader.style.display = 'none';
+
+                        // Spin Wheel
+                        wheel = new SpinWheel(wheel_canvas, context, panels, container, panelID, playID);
+                        wheel.draw();
+  
+                    }, 500)
+                } else {
+                    alert('Return to Home Page')
+                }
+            })
             
             playBtn.addEventListener('click', () => {
                 wheel.audio_ctx.resume();
@@ -369,12 +463,28 @@ window.onload = () => {
             })
 
             modal_btn.addEventListener('click', () => {
-                lose_modal.classList.remove('showModal');
+                sendResult(`${API_URL}/api/Game/SpinTheWheelResult`, access_token, request_token, panelID, playID).then(res => {
+                    console.log(res);
+                    if(res.ResponseCode === 5000) {
+                        alert('LOSE: Back to previous page?');
+                        lose_modal_content.innerHTML = '';
+                        lose_modal_title.innerHTML = '';
+                        lose_modal.classList.remove('showModal');
+                    }
+                })
+                
             })
 
             win_modal.addEventListener('click', () => {
-                prize_modal.innerHTML = '';
-                win_modal.classList.remove('showModal');
+                sendResult(`${API_URL}/api/Game/SpinTheWheelResult`, access_token, request_token, panelID, playID).then(res => {
+                    console.log(res);
+                    if(res.ResponseCode === 5000) {
+                        alert('WIN: Back to previous page?');
+                        prize_modal.innerHTML = '';
+                        win_modal.classList.remove('showModal');
+                    }
+                })
+                
             })
 
         }).catch(err => {

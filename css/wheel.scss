@@ -27,6 +27,34 @@ body {
     flex-direction: column;
     position: relative;
   }
+
+  .landing {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #fff;
+
+    .landing_msg {
+      font-size: 5rem;
+      text-align: center;
+      padding: 0 10px;
+      @include media_query(md-tablet) {
+        font-size: 5rem;
+      }
+      @include media_query(sm-phone) {
+        font-size: 4.5rem;
+      }
+      @include media_query(xxs-phone) {
+        font-size: 3.5rem;
+      }
+    }
+
+    .button {
+      margin-top: 50px;
+    }
+  }
 }
 
 #wheel {
@@ -317,6 +345,7 @@ body {
 
         img {
           max-width: 160px;
+          margin-bottom: 10px;
           @include media_query(lg-laptop) {
             max-width: 130px;
           }
@@ -424,29 +453,21 @@ body {
       flex-direction: column;
       margin-top: 20px;
       margin-bottom: 50px;
+
       img {
         max-width: 250px;
-        margin: 20px 0;
+        margin: 30px 0;
       }
 
-      .button {
-        background: rgba($button-normal-rgb, 0.8);
-        border: 2px solid #fff;
+      .prize {
         display: flex;
         align-items: center;
         justify-content: center;
-        color: $txt-light;
-        width: 100%;
-        padding: 8px 20px;
-        max-width: 150px;
-        font-size: 3rem;
-        text-align: center;
-        border-radius: 10px;
-        cursor: pointer;
+        flex-direction: column;
+        margin-top: -15px;
 
-        &:hover {
-          background: $button-hover;
-          transition: 0.5s background ease-in-out;
+        span {
+          font-size: 5rem;
         }
       }
     }
@@ -505,21 +526,6 @@ body {
 
   .try_again {
     margin-top: 0 !important;
-    .prize {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      margin-top: -15px;
-
-      img {
-        margin: 10px 0 !important;
-      }
-
-      span {
-        font-size: 5rem;
-      }
-    }
   }
 }
 
@@ -549,10 +555,31 @@ body {
 .loading {
   height: 100vh;
   width: 100vw;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   color: #fff;
   font-size: 3rem;
   position: absolute;
+}
+
+.button {
+  background: rgba($button-normal-rgb, 0.8);
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $txt-light;
+  width: 100%;
+  padding: 10px 20px 8px 20px;
+  max-width: 150px;
+  font-size: 3rem;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background: $button-hover;
+    transition: 0.5s background ease-in-out;
+  }
 }
