@@ -453,10 +453,12 @@ body {
       flex-direction: column;
       margin-top: 20px;
       margin-bottom: 50px;
-
+      .button {
+        margin-top: 20px;
+      }
       img {
         max-width: 250px;
-        margin: 30px 0;
+        margin: 50px 0;
       }
 
       .prize {

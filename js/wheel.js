@@ -4,7 +4,7 @@ const playBtn = document.getElementById('rotate');
 const context = wheel_canvas.getContext('2d');
 const lose_modal = document.querySelector('.lose_modal');
 const win_modal = document.querySelector('.win_modal');
-const modal_btn = document.querySelector('.lose_modal .button');
+const modal_btns = document.querySelectorAll('.modal .button');
 const prize_modal = win_modal.querySelector('.prize');
 const lose_modal_content = lose_modal.querySelector('.prize');
 const lose_modal_title = lose_modal.querySelector('.title');
@@ -56,7 +56,6 @@ class SpinWheel {
     draw() {
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audio_ctx = this.audioContextCheck();
-        console.log(this.audio_ctx.state);
         this.loadClickSound('assets/tick.mp3');
 
         this.wheel_canvas.width = this.width;
@@ -164,10 +163,8 @@ class SpinWheel {
     }
 
     rotate(winningID) {
-        console.log(this.audio_ctx.state);
         if(this.audio_ctx.state !== 'suspended') {
             let input = this.reversedPrizes.findIndex(p => p.Id === winningID);
-            console.log(input, "QWEQW");
             this.rotate_deg = this.calculateRotation(input);
 
             this.audioInterval = () => {
@@ -241,13 +238,8 @@ class SpinWheel {
         const response = await fetch(url);
         response.arrayBuffer().then(res => {
             this.audio_ctx.decodeAudioData(res, (buffer) => {
-                if (!buffer) {
-                    console.log('Error decoding file data: ' + url);
-                    return;
-                }
-                // console.log(buffer, "QWEQWE");
+                if (!buffer) return;
                 this.clickingBuffer = buffer;
-                
             });
         })
         
@@ -290,10 +282,16 @@ class SpinWheel {
                 img.src = 'https://via.placeholder.com/150';
                 img.style.borderRadius = '50%';
             }
-            img.alt = p.Title
+            img.alt = p.Title;
             span.innerHTML = p.Title;
             
             if(p.PanelType === 0) {
+                img.src = p.Image;
+                img.onerror = function() {
+                    img.src = '../assets/images/Sad Emoji.png';
+                    img.style.borderRadius = '50%';
+                }
+                img.alt = p.Title;
 
                 lose_modal_content.appendChild(img);
                 lose_modal_title.appendChild(span);
@@ -306,7 +304,7 @@ class SpinWheel {
             prize_modal.appendChild(span);
             win_modal.classList.add('showModal');
 
-        }, 100)
+        }, 600)
     }
 
 }
@@ -414,13 +412,11 @@ window.onload = () => {
             let playID = null;
             let panels = null;
 
+            landing_page_msg.innerHTML = "Welcome to Epson Island Wide Promotion!";
+            landing_page_btn.innerHTML = 'Continue';
+
             if(res.ResponseCode === 5100) {
                 isAllowedToPlay = false;
-                landing_page_btn.innerHTML = 'Back to Home';
-                landing_page_msg.innerHTML = res.Message;
-            } else {
-                landing_page_msg.innerHTML = "Welcome to Epson Island Wide Promotion!";
-                landing_page_btn.innerHTML = 'Continue';
             }
 
             // Events
@@ -444,7 +440,14 @@ window.onload = () => {
   
                     }, 500)
                 } else {
-                    alert('Return to Home Page')
+                    loader.style.display = 'flex';
+                    landing_page_msg.innerHTML = '';
+                    landing_page_btn.style.display = "none";
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        landing_page_msg.innerHTML = res.Message;
+                        
+                    }, 700)
                 }
             })
             
@@ -462,35 +465,20 @@ window.onload = () => {
                 wheel.transitionEnd();
             })
 
-            modal_btn.addEventListener('click', () => {
-                sendResult(`${API_URL}/api/Game/SpinTheWheelResult`, access_token, request_token, panelID, playID).then(res => {
-                    console.log(res);
-                    if(res.ResponseCode === 5000) {
-                        alert('LOSE: Back to previous page?');
-                        lose_modal_content.innerHTML = '';
-                        lose_modal_title.innerHTML = '';
-                        lose_modal.classList.remove('showModal');
-                    }
+            modal_btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sendResult(`${API_URL}/api/Game/SpinTheWheelResult`, access_token, request_token, panelID, playID).then(res => {
+                        if(res.ResponseCode === 5000) {
+                            window.location.reload();
+                        }
+                    })
                 })
-                
-            })
-
-            win_modal.addEventListener('click', () => {
-                sendResult(`${API_URL}/api/Game/SpinTheWheelResult`, access_token, request_token, panelID, playID).then(res => {
-                    console.log(res);
-                    if(res.ResponseCode === 5000) {
-                        alert('WIN: Back to previous page?');
-                        prize_modal.innerHTML = '';
-                        win_modal.classList.remove('showModal');
-                    }
-                })
-                
             })
 
         }).catch(err => {
             console.log(err);
         })
     } else {
-        console.log("Request Token Unavailable.");
+        alert("Request Token Unavailable.");
     }
 }

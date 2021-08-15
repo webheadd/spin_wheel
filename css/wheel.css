@@ -721,9 +721,13 @@ body {
   margin-bottom: 50px;
 }
 
+.modal .modal_content .try_again .button {
+  margin-top: 20px;
+}
+
 .modal .modal_content .try_again img {
   max-width: 250px;
-  margin: 30px 0;
+  margin: 50px 0;
 }
 
 .modal .modal_content .try_again .prize {
