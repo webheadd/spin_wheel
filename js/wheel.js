@@ -406,7 +406,7 @@ window.onload = () => {
 
     if(getParameterByName('token')) {
         const request_token = getParameterByName('token');
-        loader.style.display = 'flex';
+        
         getData(`${API_URL}/api/Game/SpinTheWheel`, access_token, request_token).then(res => {
             let panelID = null;
             let playID = null;
@@ -482,5 +482,6 @@ window.onload = () => {
         })
     } else {
         alert("Request Token Unavailable.");
+        loader.style.display = 'none';
     }
 }
