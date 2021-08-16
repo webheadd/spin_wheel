@@ -163,6 +163,7 @@ class SpinWheel {
     }
 
     rotate(winningID) {
+        
         if(this.audio_ctx.state !== 'suspended') {
             let input = this.reversedPrizes.findIndex(p => p.Id === winningID);
             this.rotate_deg = this.calculateRotation(input);
@@ -174,6 +175,7 @@ class SpinWheel {
                     setTimeout(this.audioInterval, this.counter);
                 } else {
                     this.counter = 0;
+                    playBtn.disabled = false;
                 }
 
                 
@@ -456,10 +458,17 @@ window.onload = () => {
             playBtn.addEventListener('click', () => {
                 wheel.audio_ctx.resume();
 
-                setTimeout(() => {
-                    //pass prize ID
-                    wheel.rotate(panelID);
-                }, 50)
+                if(!playBtn.disabled) {
+                    setTimeout(() => {
+                        //pass prize ID
+                        wheel.rotate(panelID);
+
+                    }, 50)
+                }
+
+                playBtn.disabled = true;
+
+                
             });
 
             wheel_canvas.addEventListener('transitionend', () => {
