@@ -403,7 +403,6 @@ window.onload = () => {
 
 
     // Hide content 
-    content.style.display = 'none';
 
     if(getParameterByName('token')) {
         const request_token = getParameterByName('token');
@@ -434,7 +433,7 @@ window.onload = () => {
 
                         setPrizeList(panels);
 
-                        content.style.display = 'block';
+                        content.style.display = 'flex';
                         loader.style.display = 'none';
 
                         // Spin Wheel
