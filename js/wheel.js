@@ -169,7 +169,7 @@ class SpinWheel {
         const img_h = (this.canvas_size/6);
         img.src = p.Image;
         img.onerror = function() {
-            img.src = '../assets/images/Sad Emoji.png';
+            img.src = 'assets/images/Sad Emoji.png';
             img.style.borderRadius = '50%';
         }
 
@@ -180,12 +180,35 @@ class SpinWheel {
             this.context.translate(this.x, this.y);
             this.context.rotate(rotation);
             this.context.translate(-this.x, -this.y);
+
+            this.roundedImage(img_w*2.5, 5, img_w-5, img_h-5, (img_w-5)/2);
+            this.context.clip();
+            
             this.context.drawImage(img, (img_w*2.5), 5, img_w-5, img_h-5);
 
             this.context.restore();
         }
         
     }
+
+    roundedImage(x, y, width, height, radius) {
+        this.context.beginPath();
+        this.context.moveTo(x + radius, y);
+        this.context.lineTo(x + width - radius, y);
+        this.context.quadraticCurveTo(x + width, y, x + width, y + radius);
+        this.context.lineTo(x + width, y + height - radius);
+        this.context.quadraticCurveTo(
+          x + width,
+          y + height,
+          x + width - radius,
+          y + height
+        );
+        this.context.lineTo(x + radius, y + height);
+        this.context.quadraticCurveTo(x, y + height, x, y + height - radius);
+        this.context.lineTo(x, y + radius);
+        this.context.quadraticCurveTo(x, y, x + radius, y);
+        this.context.closePath();
+      }
 
     getFontSize() {
         const fontBase = this.wheel_canvas.clientWidth,
