@@ -169,7 +169,7 @@ class SpinWheel {
         const img_h = (this.canvas_size/6);
         img.src = p.Image;
         img.onerror = function() {
-            img.src = '../assets/images/Sad Emoji.png';
+            img.src = 'https://via.placeholder.com/150';
             img.style.borderRadius = '50%';
         }
 
@@ -181,7 +181,7 @@ class SpinWheel {
             this.context.rotate(rotation);
             this.context.translate(-this.x, -this.y);
 
-            this.roundedImage(img_w*2.5, 5, img_w-5, img_h-5, (img_w-5)/2);
+            this.roundedImage(img_w*2.5, 5, img_w-5, img_h-5, (img_w-5)*0.5);
             this.context.clip();
             
             this.context.drawImage(img, (img_w*2.5), 5, img_w-5, img_h-5);
