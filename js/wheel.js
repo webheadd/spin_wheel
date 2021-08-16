@@ -288,13 +288,6 @@ class SpinWheel {
             span.innerHTML = p.Title;
             
             if(p.PanelType === 0) {
-                img.src = p.Image;
-                img.onerror = function() {
-                    img.src = 'https://via.placeholder.com/150';
-                    img.style.borderRadius = '50%';
-                }
-                img.alt = p.Title;
-
                 lose_modal_content.appendChild(img);
                 lose_modal_title.appendChild(span);
 
