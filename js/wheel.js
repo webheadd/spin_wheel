@@ -290,7 +290,7 @@ class SpinWheel {
             if(p.PanelType === 0) {
                 img.src = p.Image;
                 img.onerror = function() {
-                    img.src = '../assets/images/Sad Emoji.png';
+                    img.src = 'https://via.placeholder.com/150';
                     img.style.borderRadius = '50%';
                 }
                 img.alt = p.Title;
