@@ -92,6 +92,11 @@ class SpinWheel {
 
             // Draw Label texts
             this.drawText(p, startAngle, endAngle);
+
+            // Draw Icons
+            if(p.PanelType === 0) {
+                this.drawIcons(p, startAngle);
+            }
         })
         
         this.wheel_canvas.style.transform = `rotate(${1.8 * Math.PI * this.radius/this.numberOfPrizes}deg)`;
@@ -103,9 +108,14 @@ class SpinWheel {
         
         let fontSize = this.getFontSize()*1.25;
 
-        if(this.numberOfPrizes <= 6) {
+        if(this.numberOfPrizes <= 8) {
             let text = p.Title.includes(" ") ? p.Title.split(" ") : [p.Title];
-            this.context.translate(this.x + Math.cos(startAngle + this.angle / 2) * (this.x/1.4), this.y + Math.sin(startAngle + this.angle / 2) * (this.y/1.4));
+            if(p.PanelType === 0) {
+                this.context.translate(this.x + Math.cos(startAngle + this.angle / 2) * (this.x/2), this.y + Math.sin(startAngle + this.angle / 2) * (this.y/2));
+                fontSize = this.getFontSize();
+            } else {
+                this.context.translate(this.x + Math.cos(startAngle + this.angle / 2) * (this.x/1.5), this.y + Math.sin(startAngle + this.angle / 2) * (this.y/1.5));
+            }
             this.context.rotate(startAngle + this.angle / 2 + Math.PI / 2);
 
             this.context.beginPath();
@@ -128,7 +138,6 @@ class SpinWheel {
             }
 
             text.forEach((txt, x) => { 
-                
                 if(txt.includes('<span>')) {
                     txt = txt.split('<span>')[1];
                     fontSize = this.getFontSize() * 3.5;
@@ -136,7 +145,6 @@ class SpinWheel {
 
                 this.context.font = `${fontSize}px Epson`;
                 this.context.fillText(txt.toUpperCase(), -this.context.measureText(txt.toUpperCase()).width / 2, (fontSize*x));
-                
             })
             
         } else {
@@ -152,6 +160,31 @@ class SpinWheel {
             this.context.fillText(p.Title.toUpperCase(), this.x/1.7, this.y*0.05);
         }
         this.context.restore();
+    }
+
+    drawIcons(p, startAngle) {
+        // console.log(this.canvas_size);
+        let img = new Image();
+        const img_w = (this.canvas_size/6);
+        const img_h = (this.canvas_size/6);
+        img.src = p.Image;
+        img.onerror = function() {
+            img.src = '../assets/images/Sad Emoji.png';
+            img.style.borderRadius = '50%';
+        }
+
+        img.onload = () => {
+            let rotation = startAngle + this.angle / 2 + Math.PI / 2;
+            this.context.save();
+
+            this.context.translate(this.x, this.y);
+            this.context.rotate(rotation);
+            this.context.translate(-this.x, -this.y);
+            this.context.drawImage(img, (img_w*2.5), 5, img_w-5, img_h-5);
+
+            this.context.restore();
+        }
+        
     }
 
     getFontSize() {
