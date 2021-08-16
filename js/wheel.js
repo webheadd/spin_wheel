@@ -407,13 +407,16 @@ window.onload = () => {
 
     if(getParameterByName('token')) {
         const request_token = getParameterByName('token');
+        loader.style.display = 'flex';
         getData(`${API_URL}/api/Game/SpinTheWheel`, access_token, request_token).then(res => {
             let panelID = null;
             let playID = null;
             let panels = null;
+            
+            landing_page.style.display = "flex";
 
-            landing_page_msg.innerHTML = "Welcome to Epson Island Wide Promotion!";
-            landing_page_btn.innerHTML = 'Continue';
+            loader.style.display = 'none';
+            
 
             if(res.ResponseCode === 5100) {
                 isAllowedToPlay = false;
