@@ -169,7 +169,7 @@ class SpinWheel {
         const img_h = (this.canvas_size/6);
         img.src = p.Image;
         img.onerror = function() {
-            img.src = 'assets/images/Sad Emoji.png';
+            img.src = './assets/images/Sad Emoji.png';
             img.style.borderRadius = '50%';
         }
 
